@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import { Outlet } from 'react-router-dom';
 // @mui
 import { styled, StyledEngineProvider } from '@mui/material/styles';
@@ -46,13 +47,20 @@ export default function DashboardLayout() {
 
   const [open, setOpen] = useState(isDesktop);
 
+  const {isLogin, userInfo} = useSelector((state) => state);
+
+  // useEffect(() => {
+  //   console.log(isLogin);
+  //   console.log(userInfo);
+  // }, [isLogin, userInfo]);
+
   return (
     <StyledRoot>
-      <Header isMobile={isMobile} openNav={open} onOpenNav={() => setOpen(true)} onCloseNav={() => setOpen(false)} />
+      <Header isLogin={isLogin} userInfo={userInfo} isMobile={isMobile} openNav={open} onOpenNav={() => setOpen(true)} onCloseNav={() => setOpen(false)} />
       
-      <Nav isMobile={isMobile} openNav={open} onCloseNav={() => setOpen(false)} onOpenNav={() => setOpen(true)}/>
+      <Nav isLogin={isLogin} userInfo={userInfo} isMobile={isMobile} openNav={open} onCloseNav={() => setOpen(false)} onOpenNav={() => setOpen(true)}/>
       
-      <Main isMobile={isMobile} open={open}>
+      <Main isLogin={isLogin} userInfo={userInfo} isMobile={isMobile} open={open}>
         <Outlet />
       </Main>
 

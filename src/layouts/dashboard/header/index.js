@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 // @mui
 import { styled } from '@mui/material/styles';
-import { Box, Stack, AppBar, Toolbar, IconButton } from '@mui/material';
+import { Box, Stack, AppBar, Toolbar, IconButton, Drawer } from '@mui/material';
 // utils
 import { bgBlur } from '../../../utils/cssStyles';
 //
@@ -53,9 +53,16 @@ Header.propTypes = {
   openNav: PropTypes.bool,
   onOpenNav: PropTypes.func,
   onCloseNav: PropTypes.func,
+  isLogin: PropTypes.bool,
+  userInfo: PropTypes.shape({
+    ID: PropTypes.number,
+    Email: PropTypes.string,
+    Provider: PropTypes.string,
+    UserType: PropTypes.string,
+  }),
 };
 
-export default function Header({ openNav, onOpenNav, onCloseNav }) {
+export default function Header({ openNav, onOpenNav, onCloseNav, isLogin, userInfo }) {
   const { pathname } = useLocation();
 
   useEffect(() => {
@@ -71,6 +78,9 @@ export default function Header({ openNav, onOpenNav, onCloseNav }) {
       onOpenNav();
     }
   };
+
+  console.log(isLogin)
+
 
   return (
     <StyledRoot>
@@ -104,9 +114,14 @@ export default function Header({ openNav, onOpenNav, onCloseNav }) {
         >
           {/* <LanguagePopover /> */}
           {/* <Logo /> */}
+          
           <Searchbar />
-          <NotificationsPopover />
-          <AccountPopover />
+            {isLogin ? (
+              <NotificationsPopover />
+            ) : (
+              <Drawer />
+            )}
+          <AccountPopover isLogin={isLogin} userInfo={userInfo}/>
         </Stack>
       </StyledToolbar>
     </StyledRoot>

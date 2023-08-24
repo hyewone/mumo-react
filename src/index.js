@@ -1,5 +1,9 @@
 import ReactDOM from 'react-dom/client';
 
+import { Provider } from 'react-redux'
+import { createStore, combineReducers } from 'redux';
+import loginReducer from './reducer/login';
+
 //
 import App from './App';
 import * as serviceWorker from './serviceWorker';
@@ -9,7 +13,19 @@ import reportWebVitals from './reportWebVitals';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
-root.render(<App />);
+const store = createStore(loginReducer);
+
+// root.render(<App />);
+
+root.render(
+    <Provider store={store}>
+         {/* <React.StrictMode>  */}
+            <meta name="viewport" content="initial-scale=1, viewport-fit=cover" />
+
+            <App />
+         {/* </React.StrictMode>,  */}
+    </Provider>
+);
 
 // If you want to enable client cache, register instead.
 serviceWorker.unregister();

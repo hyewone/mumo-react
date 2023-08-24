@@ -25,12 +25,14 @@ ShopProductCard.propTypes = {
 };
 
 export default function ShopProductCard({ product }) {
-  const { name, cover, price, colors, status, priceSale, age } = product;
+
+  const { ID, MovieID, MovieNm, CinemaType, Title, Url, Image, EndYn, CreatedAt, UpdatedAt } = product;
 
   return (
     <Card>
-      <Box sx={{ pt: '100%', position: 'relative' }}>
-        {status && (
+      <Box sx={{ pt: '60%', position: 'relative', width: '100%' }}>
+      {/* <Box sx={{ pt: '100%', position: 'relative' }}> */}
+        {/* {status && (
           <Label
             variant="filled"
             color={(status === 'hot' && 'error') || 'info'}
@@ -42,21 +44,21 @@ export default function ShopProductCard({ product }) {
               textTransform: 'uppercase',
             }}
           >
-            {status}
+            {status} 
           </Label>
-        )}
-        <StyledProductImg alt={name} src={cover} />
+        )} */}
+        <StyledProductImg alt={Title} src={Image} />
       </Box>
 
-      <Stack spacing={2} sx={{ p: 3 }}>
+      <Stack spacing={2} sx={{ pt: '40%', p: 2 }}>
         <Link color="inherit" underline="hover">
           <Typography variant="subtitle2" noWrap>
-              {age} 세
+              {/* {age}  세 */}
           </Typography>
         </Link>
 
         <Stack direction="row" alignItems="center" justifyContent="space-between">
-          <ColorPreview colors={colors} />
+          {/* <ColorPreview colors={colors} /> */}
           <Typography variant="subtitle1">
             <Typography
               component="span"
@@ -68,7 +70,7 @@ export default function ShopProductCard({ product }) {
             >
               {/* {priceSale && fCurrency(priceSale)} */}
             </Typography>
-            {name}
+            {Title}
             {/* &nbsp;
             {fCurrency(price)} */}
           </Typography>

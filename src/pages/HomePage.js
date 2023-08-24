@@ -1,4 +1,6 @@
 import { Helmet } from 'react-helmet-async';
+import axios from 'axios';
+import { useEffect, useState } from 'react';
 import { faker } from '@faker-js/faker';
 // @mui
 import { useTheme } from '@mui/material/styles';
@@ -27,10 +29,61 @@ import { ProductList } from '../sections/@dashboard/products';
 import POSTS from '../_mock/blog';
 import PRODUCTS from '../_mock/products';
 
+
 // ----------------------------------------------------------------------
 
 export default function HomePage() {
   const theme = useTheme();
+
+  const [megaboxSgUrlList, setMegaboxSgUrlList] = useState([]); // 뉴스 데이터 상태 관리
+  const [lotteSgUrlList, setLotteSgUrlList] = useState([]); // 주문 데이터 상태 관리
+  const [cgvSgUrlList, setCgvSgUrlList] = useState([]); // 주문 데이터 상태 관리
+
+
+  const fetchAllData = async () => {
+    fetchMegaboxSgUrlList()
+    fetchLotteStageGreetingList()
+    fetchCgvStageGreetingList()
+  }
+
+  // API 호출 함수 정의
+  const fetchMegaboxSgUrlList = async () => {
+    try {
+      const response = await axios.get('http://localhost:8080/api/v1/stageGreetings?cinemaType=MEGABOX');
+      setMegaboxSgUrlList(response.data.stageGreetingUrls);
+    } catch (error) {
+      console.error('Error fetching megebox stageGreeting:', error);
+    }
+  };
+
+  const fetchLotteStageGreetingList = async () => {
+    try {
+      const response = await axios.get('http://localhost:8080/api/v1/stageGreetings?cinemaType=LOTTECINEMA');
+      setLotteSgUrlList(response.data.stageGreetingUrls);
+    } catch (error) {
+      console.error('Error fetching orders:', error);
+    }
+  };
+
+  const fetchCgvStageGreetingList = async () => {
+    try {
+      const response = await axios.get('http://localhost:8080/api/v1/stageGreetings?cinemaType=CGV');
+      setCgvSgUrlList(response.data.stageGreetingUrls);
+    } catch (error) {
+      console.error('Error fetching orders:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchAllData()
+  }, []);
+
+  useEffect(() => {
+    console.log(megaboxSgUrlList)
+    console.log(lotteSgUrlList)
+    console.log(cgvSgUrlList)
+  }, [megaboxSgUrlList, lotteSgUrlList, cgvSgUrlList]);
+
 
   return (
     <>
@@ -39,36 +92,15 @@ export default function HomePage() {
       </Helmet>
 
       <Container maxWidth="xl">
-        <Typography variant="h4" sx={{ mb: 5 }} align="center">
-          제작자와 배우를 온라인으로 연결시켜주는 ProfileHub
-          <br/>
-          배우님들 
-          <br/>
-          1. 이제 더 이상 온라인 프로필 투어하지 않아도 됩니다
-          <br/>
-          2. 프로필을 편리하게 관리하세요
-          <br/>
-          3. 맘에 드는 작품 공고에 지원해보세요
-
-          <br/>
-          제작자님들 
-          <br/>
-          1. 이제 간편하게 작품에 적합한 배우를 찾아보세요
-          <br/>
-          2. 맘에 드는 배우를 즐겨찾기하고 DM을 보내 캐스팅해보세요
-          <br/>
-          3. 다른 제작자분과 지정된 채팅방에서 작업 관련 대화를 나눠보세요
-          <br/>
-
-        </Typography>
-
+        <Typography variant="h4" sx={{ mb: 5 }} align="center"/>
+       
         <Grid container spacing={3}>
 
           <Grid item xs={12} md={12} lg={12}>
             <Card>
-              <CardHeader title="최신 프로필" subheader="" />
+              <CardHeader title="메가박스" subheader="" />
               <Box sx={{ p: 3, pb: 1 }} dir="ltr">
-                <ProductList products={PRODUCTS.slice(0, 4)} />
+                <ProductList products={megaboxSgUrlList} />
               </Box>
               <CardHeader />
             </Card>
@@ -76,13 +108,26 @@ export default function HomePage() {
 
           <Grid item xs={12} md={12} lg={12}>
             <Card>
-              <CardHeader title="최신 작품 공고" subheader="" />
+              <CardHeader title="롯데시네마" subheader="" />
               <Box sx={{ p: 3, pb: 1 }} dir="ltr">
+                <ProductList products={lotteSgUrlList} />
+              </Box>
+              {/* <Box sx={{ p: 3, pb: 1 }} dir="ltr">
                 <Grid container spacing={3}>
-                  {POSTS.slice(0, 4).map((post, index) => (
+                  {POSTS.slice(0, 3).map((post, index) => (
                     <BlogPostCard key={post.id} post={post} index={index} />
                   ))}
                 </Grid>
+              </Box> */}
+              <CardHeader />
+            </Card>
+          </Grid>
+
+          <Grid item xs={12} md={12} lg={12}>
+            <Card>
+              <CardHeader title="CGV" subheader="" />
+              <Box sx={{ p: 3, pb: 1 }} dir="ltr">
+                <ProductList products={cgvSgUrlList} />
               </Box>
               <CardHeader />
             </Card>

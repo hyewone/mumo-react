@@ -1,8 +1,9 @@
+import PropTypes from 'prop-types';
 import { useState } from 'react';
 // @mui
 import { styled, alpha } from '@mui/material/styles';
-import { Box, Divider, Typography, Stack, MenuItem, Avatar, IconButton, Popover, Link } from '@mui/material';
-
+import { Box, Divider, Typography, Stack, MenuItem, Avatar, IconButton, Popover, Link, Drawer } from '@mui/material';
+import { useSelector, useDispatch } from 'react-redux';
 
 // ----------------------------------------------------------------------
 
@@ -42,7 +43,17 @@ const nonAccount = {
 
 // ----------------------------------------------------------------------
 
-export default function AccountPopover() {
+AccountPopover.propTypes = {
+  isLogin: PropTypes.bool,
+  userInfo: PropTypes.shape({
+    ID: PropTypes.number,
+    Email: PropTypes.string,
+    Provider: PropTypes.string,
+    UserType: PropTypes.string,
+  }),
+};
+
+export default function AccountPopover({ isLogin, userInfo }) {
   const [open, setOpen] = useState(null);
 
   const handleOpen = (event) => {
@@ -51,6 +62,11 @@ export default function AccountPopover() {
 
   const handleClose = () => {
     setOpen(null);
+  };
+
+  const handleLogout = () => {
+    handleClose()
+
   };
 
   return (
@@ -72,39 +88,42 @@ export default function AccountPopover() {
           },
         }),
       }}>
-        {/* 로그인된 사용자 정보 */}
-        {/* <Box sx={{ mb: 5, mx: 2.5 }}> */}
-        {/* <Box sx={{ width: '100%', height: '100%'}}>
-          <Link underline="none">
-            <StyledAccount>
-              <Avatar src={account.photoURL} alt="photoURL" />
+         {isLogin ? (
+               <Box sx={{ width: '100%', height: '100%'}}>
+                <Link underline="none">
+                  <StyledAccount>
+                    {/* <Avatar src={account.photoURL} alt="photoURL" /> */}
 
-              <Box sx={{ ml: 2 }}>
-                <Typography variant="subtitle2" sx={{ color: 'text.primary' }}>
-                  {account.displayName}
-                </Typography>
+                    <Box sx={{ ml: 2 }}>
+                      <Typography variant="subtitle2" sx={{ color: 'text.primary' }}>
+                        {userInfo.Email}
+                      </Typography>
 
-                <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                  {account.role}
-                </Typography>
+                      {/* <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+                        {userInfo.UserType}
+                      </Typography> */}
+                    </Box>
+                  </StyledAccount>
+                </Link>
               </Box>
-            </StyledAccount>
-          </Link>
-        </Box> */}
-        <Box sx={{ width: '100%', height: '100%'}}>
-          <Link underline="none">
-            <StyledAccount>
-              {/* <Avatar src={nonAccount.photoURL} alt="photoURL" /> */}
-                <Typography variant="subtitle2" sx={{ color: 'text.primary' }}>
-                  {nonAccount.displayName}
-                </Typography>
+          ) :
+          (
+              <Box sx={{ width: '100%', height: '100%'}}>
+                <Link underline="none">
+                  <StyledAccount>
+                    {/* <Avatar src={nonAccount.photoURL} alt="photoURL" /> */}
+                      <Typography variant="subtitle2" sx={{ color: 'text.primary' }}>
+                        {nonAccount.displayName}
+                      </Typography>
 
-                <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                  {nonAccount.role}
-                </Typography>
-            </StyledAccount>
-          </Link>
-        </Box>
+                      {/* <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+                        {nonAccount.role}
+                      </Typography> */}
+                  </StyledAccount>
+                </Link>
+              </Box>
+          )}
+        
       </IconButton>
       {/* <IconButton
         onClick={handleOpen}
@@ -145,14 +164,14 @@ export default function AccountPopover() {
           },
         }}
       >
-        <Box sx={{ my: 1.5, px: 2.5 }}>
+        {/* <Box sx={{ my: 1.5, px: 2.5 }}>
           <Typography variant="subtitle2" noWrap>
             {account.displayName}
           </Typography>
           <Typography variant="body2" sx={{ color: 'text.secondary' }} noWrap>
             {account.email}
           </Typography>
-        </Box>
+        </Box> */}
 
         <Divider sx={{ borderStyle: 'dashed' }} />
 

@@ -6,6 +6,7 @@ import axios from 'axios'
 // @mui
 import { styled } from '@mui/material/styles';
 import { Link, Container, Typography, Divider, Stack, Button, IconButton } from '@mui/material';
+import { useSelector, useDispatch } from 'react-redux';
 // components
 import Logo from '../components/logo';
 import Iconify from '../components/iconify';
@@ -54,6 +55,32 @@ const StyledButton = styled(Button)(({ theme }) => ({
 export default function LoginPage() {
   const mdUp = useResponsive('up', 'md');
 
+  const {isLogin, userInfo} = useSelector((state) => state);
+  const isLoginDispatch = useDispatch();
+
+  useEffect(() => {
+    // if(isLogin){
+    //     navigator('/');
+    // }
+    if (isLogin) {
+      window.location.href = '/';
+    }
+
+    console.log(isLogin);
+    console.log(userInfo);
+  }, [isLogin, userInfo]);
+
+  const successLogin = (data) => {
+      isLoginDispatch({type: 'isLogin', data: data.user_info, token: data.token});
+  }
+
+  const failLogin = () => {
+      isLoginDispatch({type: 'isNonLogin'});
+  }
+
+  const GOOGLE = 'GOOGLE'
+  const KAKAO = 'KAKAO'
+  const NAVER = 'NAVER'
   const REDIRECT_URI        = process.env.REACT_APP_OAUTH_REDIRECT_URI
   const REDIRECT_URI_GOOGLE = REDIRECT_URI + process.env.REACT_APP_OAUTH_REDIRECT_URI_GOOGLE
   const REDIRECT_URI_KAKAO  = REDIRECT_URI + process.env.REACT_APP_OAUTH_REDIRECT_URI_KAKAO
@@ -95,7 +122,8 @@ export default function LoginPage() {
       })
       .then(response => response.json())
       .then(userData => {
-        console.log('User Data:', userData);
+        console.log('User Data:', userData)
+        login(userData.email, accessToken, GOOGLE)
         // {
         //     "id": "113093836902847036891",
         //     "email": "hyeneeoh@gmail.com",
@@ -148,6 +176,7 @@ export default function LoginPage() {
             .then(response => response.json())
             .then(userData => {
               console.log('Kakao User Data:', userData);
+              login(userData.kakao_account.email, accessToken, KAKAO)
               // 여기에서 Kakao 사용자 정보를 사용하여 필요한 처리를 수행할 수 있습니다.
               // {
               //     "id": 2971806656,
@@ -213,6 +242,7 @@ export default function LoginPage() {
             .then(response => response.json())
             .then(userData => {
               console.log('Naver User Data:', userData);
+              login(userData.response.email, accessToken, NAVER)
               // 여기에서 Naver 사용자 정보를 사용하여 필요한 처리를 수행할 수 있습니다.
               // {
               //     "resultcode": "400",
@@ -234,6 +264,32 @@ export default function LoginPage() {
         });
     }
   }; 
+
+  const login = (email, token, provider) => {
+
+    const requestBody = new URLSearchParams();
+    requestBody.append('user_email', email);
+    requestBody.append('provider_type', provider);
+
+    fetch('http://localhost:8080/auth/login',{
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
+        'Authorization': `Bearer ${token}`,
+      },
+      body: requestBody.toString(),
+    })
+    .then(response => response.json())
+    .then(data => {
+      successLogin(data);
+      console.log(data.token);
+      console.log(data.user_info);
+    })
+    .catch(error => {
+      failLogin()
+      console.error('Error:', error);
+    });
+  };
 
 
   const imgStyle = {
