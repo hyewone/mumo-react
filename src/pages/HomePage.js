@@ -50,7 +50,9 @@ export default function HomePage() {
   const fetchMegaboxSgUrlList = async () => {
     try {
       const response = await axios.get('http://localhost:8080/api/v1/stageGreetings?cinemaType=MEGABOX');
-      setMegaboxSgUrlList(response.data.stageGreetingUrls);
+      let data = response.data.stageGreetingUrls
+      data = data == null ? [] : data
+      setMegaboxSgUrlList(data);
     } catch (error) {
       console.error('Error fetching megebox stageGreeting:', error);
     }
@@ -59,7 +61,9 @@ export default function HomePage() {
   const fetchLotteStageGreetingList = async () => {
     try {
       const response = await axios.get('http://localhost:8080/api/v1/stageGreetings?cinemaType=LOTTECINEMA');
-      setLotteSgUrlList(response.data.stageGreetingUrls);
+      let data = response.data.stageGreetingUrls
+      data = data == null ? [] : data
+      setLotteSgUrlList(data);
     } catch (error) {
       console.error('Error fetching orders:', error);
     }
@@ -68,7 +72,9 @@ export default function HomePage() {
   const fetchCgvStageGreetingList = async () => {
     try {
       const response = await axios.get('http://localhost:8080/api/v1/stageGreetings?cinemaType=CGV');
-      setCgvSgUrlList(response.data.stageGreetingUrls);
+      let data = response.data.stageGreetingUrls
+      data = data == null ? [] : data
+      setCgvSgUrlList(data);
     } catch (error) {
       console.error('Error fetching orders:', error);
     }
