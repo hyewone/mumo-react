@@ -52,7 +52,6 @@ import { UserListHead, UserListToolbar } from '../sections/@dashboard/user';
 // mock
 import POSTS from '../_mock/blog';
 import PRODUCTS from '../_mock/products';
-import sgList from '../_mock/user';
 
 // ----------------------------------------------------------------------
 
@@ -101,7 +100,7 @@ function applySortFilter(array, comparator, query) {
 // ----------------------------------------------------------------------
 
 export default function HomePage() {
-  const apiUrl = "http://localhost:8080"
+  const apiUrl = process.env.REACT_APP_API_URL
 
   const theme = useTheme();
 
@@ -249,11 +248,11 @@ export default function HomePage() {
   }, []);
 
   useEffect(() => {
-    console.log(sgList)
+    // console.log(sgList)
     // console.log(megaboxSgUrlList)
     // console.log(lotteSgUrlList)
     // console.log(cgvSgUrlList)
-  }, [megaboxSgUrlList, lotteSgUrlList, cgvSgUrlList]);
+  }, [sgList, megaboxSgUrlList, lotteSgUrlList, cgvSgUrlList]);
 
 
 // ----------------------------------------------------------------------

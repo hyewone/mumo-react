@@ -59,9 +59,6 @@ export default function LoginPage() {
   const isLoginDispatch = useDispatch();
 
   useEffect(() => {
-    // if(isLogin){
-    //     navigator('/');
-    // }
     if (isLogin) {
       window.location.href = '/';
     }

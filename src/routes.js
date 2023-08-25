@@ -10,6 +10,8 @@ import Page404 from './pages/Page404';
 import ProductsPage from './pages/ProductsPage';
 import DashboardAppPage from './pages/DashboardAppPage';
 import HomePage from './pages/HomePage';
+import MapPage from './pages/MapPage';
+import MyPage from './pages/MyPage';
 import ProfilePage from './pages/ProfilePage';
 import FilmoPage from './pages/FilmoPage';
 
@@ -23,6 +25,8 @@ export default function Router() {
       children: [
         { element: <Navigate to="/dashboard/app" />, index: true },
         { path: 'home', element: <HomePage /> },
+        { path: 'map', element: <MapPage /> },
+        { path: 'myPage', element: <MyPage /> },
         { path: 'profile', element: <ProfilePage /> },
         { path: 'filmo', element: <FilmoPage /> },
         { path: 'app', element: <DashboardAppPage /> },
