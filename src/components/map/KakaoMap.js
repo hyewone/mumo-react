@@ -21,5 +21,5 @@ export default function KakaoMap() {
                 {/* <div style={{ color: "#000" }}>Hello World!</div> */}
         </Map>
     );
-    }
+}
 

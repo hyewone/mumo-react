@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { Outlet } from 'react-router-dom';
+import { Outlet, useLocation } from 'react-router-dom';
 // @mui
 import { styled, StyledEngineProvider } from '@mui/material/styles';
 
@@ -41,13 +41,19 @@ const Main = styled('div')(({ theme, open }) => ({
 // ----------------------------------------------------------------------
 
 export default function DashboardLayout() {
-  const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+  // const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 
   const isDesktop = useResponsive('up', 'lg');
 
   const [open, setOpen] = useState(isDesktop);
+  const [openBottomNav, setBottomNavOpen] = useState(!isDesktop);
 
   const {isLogin, userInfo} = useSelector((state) => state);
+
+  const location = useLocation();
+  useEffect(() => {
+    setOpen(false);
+  }, [location]);
 
   // useEffect(() => {
   //   console.log(isLogin);
@@ -56,17 +62,17 @@ export default function DashboardLayout() {
 
   return (
     <StyledRoot>
-      <Header isLogin={isLogin} userInfo={userInfo} isMobile={isMobile} openNav={open} onOpenNav={() => setOpen(true)} onCloseNav={() => setOpen(false)} />
+      <Header isLogin={isLogin} userInfo={userInfo} isDesktop={isDesktop} openNav={open} onOpenNav={() => setOpen(true)} onCloseNav={() => setOpen(false)} />
       
-      <Nav isLogin={isLogin} userInfo={userInfo} isMobile={isMobile} openNav={open} onCloseNav={() => setOpen(false)} onOpenNav={() => setOpen(true)}/>
+      <Nav isLogin={isLogin} userInfo={userInfo} isDesktop={isDesktop} openNav={open} onCloseNav={() => setOpen(false)} onOpenNav={() => setOpen(true)}/>
       
-      <Main isLogin={isLogin} userInfo={userInfo} isMobile={isMobile} open={open}>
+      <Main open={open}>
         <Outlet />
       </Main>
 
-      {/* { isMobile &&  */}
-      <BottomNavbar /> 
-      {/* } */}
+      { !isDesktop && 
+      <BottomNavbar openBottomNav={openBottomNav} onCloseBottomNav={() => setBottomNavOpen(false)} onOpenBottomNav={() => setBottomNavOpen(true)}/> 
+      }
     </StyledRoot>
   );
 }

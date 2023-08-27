@@ -1,4 +1,5 @@
-import * as React from 'react';
+import PropTypes from 'prop-types';
+import { useEffect, useState } from 'react';
 import BottomNavigation from '@mui/material/BottomNavigation';
 import BottomNavigationAction from '@mui/material/BottomNavigationAction';
 import FolderIcon from '@mui/icons-material/Folder';
@@ -6,8 +7,28 @@ import RestoreIcon from '@mui/icons-material/Restore';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 
-export default function LabelBottomNavigation() {
-  const [value, setValue] = React.useState('recents');
+LabelBottomNavigation.propTypes = {
+  openBottomNav: PropTypes.bool,
+  onCloseBottomNav: PropTypes.func,
+  onOpenBottomNav: PropTypes.func,
+};
+
+export default function LabelBottomNavigation({openBottomNav, onCloseBottomNav, onOpenBottomNav}) {
+  const [value, setValue] = useState('recents');
+
+  // useEffect(() => {
+  //   if (!openBottomNav) {
+  //     onCloseBottomNav();
+  //   }
+  // }, [openBottomNav]);
+
+  // const handleNavButtonClick = () => {
+  //   if (openNav) {
+  //     onCloseNav();
+  //   } else {
+  //     onOpenNav();
+  //   }
+  // };
 
   const handleChange = (event, newValue) => {
     setValue(newValue);

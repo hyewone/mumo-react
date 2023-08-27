@@ -54,12 +54,11 @@ Nav.propTypes = {
   openNav: PropTypes.bool,
   onCloseNav: PropTypes.func,
   onOpenNav: PropTypes.func,
+  isDesktop: PropTypes.bool,
 };
 
-export default function Nav({ openNav, onCloseNav, onOpenNav }) {
+export default function Nav({ openNav, onCloseNav, onOpenNav, isDesktop }) {
   const { pathname } = useLocation();
-
-  const isDesktop = useResponsive('up', 'lg');
 
   useEffect(() => {
     if (!openNav) {
@@ -166,7 +165,7 @@ export default function Nav({ openNav, onCloseNav, onOpenNav }) {
       //   // },
       // }}
     >
-      {isDesktop ? (
+      {isDesktop && (
         <Drawer
           open={openNav}
           onClose={onCloseNav}
@@ -176,20 +175,6 @@ export default function Nav({ openNav, onCloseNav, onOpenNav }) {
               width: openNav ? NAV_WIDTH : 0,
               bgcolor: 'background.default',
               borderRightStyle: 'dashed',
-            },
-          }}
-        >
-          {renderContent}
-        </Drawer>
-      ) : (
-        <Drawer
-          open={openNav}
-          onClose={onCloseNav}
-          ModalProps={{
-            keepMounted: true,
-          }}
-          PaperProps={{
-            sx: { width: NAV_WIDTH,
             },
           }}
         >

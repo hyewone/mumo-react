@@ -40,7 +40,9 @@ const StyledRoot = styled(AppBar)(({ theme }) => ({
 }));
 
 const StyledToolbar = styled(Toolbar)(({ theme }) => ({
-  paddingLeft: 0,
+  [theme.breakpoints.up('lg')]: {
+    paddingLeft: 0,
+  },
   minHeight: HEADER_MOBILE,
   [theme.breakpoints.up('lg')]: {
     minHeight: HEADER_DESKTOP,
@@ -53,6 +55,7 @@ Header.propTypes = {
   openNav: PropTypes.bool,
   onOpenNav: PropTypes.func,
   onCloseNav: PropTypes.func,
+  isDesktop: PropTypes.bool,
   isLogin: PropTypes.bool,
   userInfo: PropTypes.shape({
     ID: PropTypes.number,
@@ -62,7 +65,7 @@ Header.propTypes = {
   }),
 };
 
-export default function Header({ openNav, onOpenNav, onCloseNav, isLogin, userInfo }) {
+export default function Header({ openNav, onOpenNav, onCloseNav, isDesktop, isLogin, userInfo }) {
   const { pathname } = useLocation();
 
   useEffect(() => {
@@ -79,13 +82,13 @@ export default function Header({ openNav, onOpenNav, onCloseNav, isLogin, userIn
     }
   };
 
-  console.log(isLogin)
-
 
   return (
     <StyledRoot>
       <StyledToolbar>
-        <IconButton
+        
+        { isDesktop && 
+          <IconButton
           onClick={handleNavButtonClick}
           sx={{
             mr: 1,
@@ -99,7 +102,7 @@ export default function Header({ openNav, onOpenNav, onCloseNav, isLogin, userIn
           </StyledNavItemIcon>
           {/* <Iconify icon="eva:menu-2-fill" /> */}
         </IconButton>
-
+        }
         
         <Logo />
         <Box sx={{ flexGrow: 1 }} />

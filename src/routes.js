@@ -11,6 +11,7 @@ import ProductsPage from './pages/ProductsPage';
 import DashboardAppPage from './pages/DashboardAppPage';
 import HomePage from './pages/HomePage';
 import MapPage from './pages/MapPage';
+import CalendarPage from './pages/CalendarPage'
 import MyPage from './pages/MyPage';
 import ProfilePage from './pages/ProfilePage';
 import FilmoPage from './pages/FilmoPage';
@@ -26,6 +27,7 @@ export default function Router() {
         { element: <Navigate to="/dashboard/app" />, index: true },
         { path: 'home', element: <HomePage /> },
         { path: 'map', element: <MapPage /> },
+        { path: 'calendar', element: <CalendarPage /> },
         { path: 'myPage', element: <MyPage /> },
         { path: 'profile', element: <ProfilePage /> },
         { path: 'filmo', element: <FilmoPage /> },

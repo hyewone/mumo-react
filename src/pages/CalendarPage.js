@@ -2,8 +2,9 @@ import { Helmet } from 'react-helmet-async';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { faker } from '@faker-js/faker';
-import KakaoMap from 'src/components/map/KakaoMap';
+import UseCalendar from 'src/components/calendar/UseCalendar';
 import MapSideList from 'src/components/mapList/MapSideList'
+import Sheet from 'react-modal-sheet';
 // @mui
 import { useTheme } from '@mui/material/styles';
 import { 
@@ -31,12 +32,16 @@ import {
 
 // ----------------------------------------------------------------------
 
-export default function MapPage() {
+export default function CalendarPage() {
   const theme = useTheme();
 
   const apiUrl = process.env.REACT_APP_API_URL
 
   const [sgList, setSgList] = useState([]);  
+  const [isDetailOpen, setDetailOpen] = useState(false);
+  const [isListOpen, setListOpen] = useState(false);
+  const [sgDetail, setSgDetail] = useState({});
+  const [sgDayList, setSgDayList] = useState([]);
 
   const getApiUrl = (request) => {
     return apiUrl + request
@@ -77,30 +82,39 @@ export default function MapPage() {
           무대인사 지도
         </Typography> */}
 
+        <Sheet isOpen={isDetailOpen} onClose={() => setDetailOpen(false)}>
+          <Sheet.Container>
+            <Sheet.Header />
+            <Sheet.Content>This is Detail Sheet</Sheet.Content>
+          </Sheet.Container>
+          <Sheet.Backdrop />
+        </Sheet>
+
+        <Sheet isOpen={isListOpen} onClose={() => setListOpen(false)}>
+          <Sheet.Container>
+            <Sheet.Header />
+            <Sheet.Content>This is List Sheet</Sheet.Content>
+          </Sheet.Container>
+          <Sheet.Backdrop />
+        </Sheet>
+
         <Grid container spacing={3}>
           <Grid item xs={12} md={12} lg={12}>
               <Container>
                 <Stack direction="row" alignItems="center" justifyContent="space-between" mb={2} ml={1}>
                   <Typography variant="h4" gutterBottom>
-                    무대인사 지도
+                    무대인사 달력
                   </Typography>
                 </Stack>
-                <Grid item xs={12} md={12} lg={12}>
-                <Card>
-                  
-                <Grid container>
-                  <Grid item xs={12} md={12} lg={7}>
-                  <KakaoMap />
-                  </Grid>
-                  <Grid item xs={12} md={12} lg={5}>
-                    <MapSideList sgList={sgList} />
-                  </Grid>
-                    </Grid>
-                   </Card>
-                </Grid>
+                  <Card>
+                      <UseCalendar isDetailOpen={isDetailOpen} setDetailOpen={setDetailOpen} 
+                                   isListOpen={isListOpen} setListOpen={setListOpen}
+                                   sgDetail={sgDetail} setSgDetail={setSgDetail}
+                                   sgDayList={sgDayList} setSgDayList={setSgDayList}
+                      />
+                  </Card>
             </Container>
           </Grid>
-
           {/* <Grid item xs={12} sm={6} md={3}>
             <AppWidgetSummary title="Weekly Sales" total={714000} icon={'ant-design:android-filled'} />
           </Grid>
