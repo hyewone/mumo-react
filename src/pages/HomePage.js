@@ -1,57 +1,21 @@
-import { Helmet } from 'react-helmet-async';
-import axios from 'axios';
-import { useEffect, useState } from 'react';
-import { filter } from 'lodash';
-import { sentenceCase } from 'change-case';
-import { faker } from '@faker-js/faker';
+import {
+  Box,
+  Card, CardHeader, Container, Grid, Stack, Typography
+} from '@mui/material';
 // @mui
 import { useTheme } from '@mui/material/styles';
-import {
-  Grid, 
-  Container, 
-  Typography, 
-  CardHeader, 
-  Box,
-  Card,
-  Table,
-  Stack,
-  Paper,
-  Avatar,
-  Button,
-  Popover,
-  Checkbox,
-  TableRow,
-  MenuItem,
-  TableBody,
-  TableCell,
-  IconButton,
-  TableContainer,
-  TablePagination,
-} from '@mui/material';
-
-// components
-import Iconify from '../components/iconify';
-import { BlogPostCard } from '../sections/@dashboard/blog';
-import { ProductList } from '../sections/@dashboard/products';
-import Label from '../components/label';
-import Scrollbar from '../components/scrollbar';
+import axios from 'axios';
+import { filter } from 'lodash';
+import { useEffect, useState } from 'react';
+import { Helmet } from 'react-helmet-async';
 // sections
 import {
-  AppTasks,
-  AppNewsUpdate,
-  AppOrderTimeline,
-  AppCurrentVisits,
-  AppWebsiteVisits,
-  AppTrafficBySite,
-  AppWidgetSummary,
-  AppCurrentSubject,
-  AppConversionRates,
+  AppWidgetSummary
 } from '../sections/@dashboard/app';
-import { UserListHead, UserListToolbar } from '../sections/@dashboard/user';
+import { ProductList } from '../sections/@dashboard/products';
 
-// mock
-import POSTS from '../_mock/blog';
-import PRODUCTS from '../_mock/products';
+
+
 
 // ----------------------------------------------------------------------
 
@@ -166,7 +130,7 @@ export default function HomePage() {
     }
   };
 
-// ----------------------------------------------------------------------
+  // ----------------------------------------------------------------------
 
   const [open, setOpen] = useState(null);
 
@@ -241,7 +205,7 @@ export default function HomePage() {
   const isNotFound = !filteredUsers.length && !!filterName;
 
 
-// ----------------------------------------------------------------------
+  // ----------------------------------------------------------------------
 
   useEffect(() => {
     fetchAllData()
@@ -255,7 +219,7 @@ export default function HomePage() {
   }, [sgList, megaboxSgUrlList, lotteSgUrlList, cgvSgUrlList]);
 
 
-// ----------------------------------------------------------------------
+  // ----------------------------------------------------------------------
 
   return (
     <>
@@ -264,133 +228,138 @@ export default function HomePage() {
       </Helmet>
 
       <Container maxWidth="xl">
-        <Typography variant="h4" sx={{ mb: 5 }} align="center"/>
-       
+        <Typography variant="h4" sx={{ mb: 5 }} align="center" />
+
         <Grid container spacing={10}>
 
-        <Grid item xs={12} md={12} lg={12}>
+          <Grid item xs={12} md={12} lg={12}>
+            <Container>
+              <Card>
+                <CardHeader title="시네마별 무대인사 이제는 모아보세요:)" subheader="" />
+                <Box sx={{ p: 4, pb: 1 }} dir="ltr">
+                  <Grid container spacing={1}>
+                    <Grid item xs={6} sm={6} md={3}>
+                      <a href="/dashboard/map" className="alink" style={{ textDecoration: 'none' }}>
+                        <AppWidgetSummary title="무대인사 모아보기" total={714000} icon="search" />
+                      </a>
+                    </Grid>
+                    <Grid item xs={6} sm={6} md={3}>
+                      <a href="/dashboard/map" className="alink" style={{ textDecoration: 'none' }}>
+                        <AppWidgetSummary title="지도로 보기" total={1352831} color="secondary" icon="map" />
+                      </a>
+                    </Grid>
+                    <Grid item xs={6} sm={6} md={3}>
+                      <a href="/dashboard/calendar" className="alink" style={{ textDecoration: 'none' }}>
+                        <AppWidgetSummary title="캘린더로 보기" total={1723315} color="info" icon="calendar" />
+                      </a>
+                    </Grid>
+                    <Grid item xs={6} sm={6} md={3}>
+                      <a href="/dashboard/myPage" className="alink" style={{ textDecoration: 'none' }}>
+                        <AppWidgetSummary title="내 무대인사" total={234} color="error" icon="favorite" />
+                      </a>
+                    </Grid>
+                  </Grid>
+                </Box>
+                <CardHeader />
+              </Card>
+            </Container>
+          </Grid>
 
-          <Container>
-          <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5} ml={1}>
-            <Typography variant="h4" gutterBottom lm={1}>
-              무대인사 모아보기
-            </Typography>
-            <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />}>
-              상세 모아보기
-            </Button>
-          </Stack>
+          {/* <Grid item xs={12} md={12} lg={12}>
+            <Container>
+              <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5} ml={1}>
+                <Typography variant="h4" gutterBottom lm={1}>
+                  무대인사 모아보기
+                </Typography>
+                <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />}>
+                  상세 모아보기
+                </Button>
+              </Stack>
 
-          <Card>
-            {/* <sgListToolbar numSelected={selected.length} filterName={filterName} onFilterName={handleFilterByName} /> */}
+              <Card>
+                <Scrollbar>
+                  <TableContainer sx={{ minWidth: 800 }}>
+                    <Table>
+                      <UserListHead
+                        order={order}
+                        orderBy={orderBy}
+                        headLabel={TABLE_HEAD}
+                        rowCount={sgList.length}
+                        // numSelected={selected.length}
+                        onRequestSort={handleRequestSort}
+                      // onSelectAllClick={handleSelectAllClick}
+                      />
+                      <TableBody>
+                        {filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
+                          const { ID, CinemaType, Theater, ShowDate, ShowTime, AttendeeName } = row;
+                          const MovieName = row.Movie.Name;
 
-            <Scrollbar>
-              <TableContainer sx={{ minWidth: 800 }}>
-                <Table>
-                  <UserListHead
-                    order={order}
-                    orderBy={orderBy}
-                    headLabel={TABLE_HEAD}
-                    rowCount={sgList.length}
-                    // numSelected={selected.length}
-                    onRequestSort={handleRequestSort}
-                    // onSelectAllClick={handleSelectAllClick}
-                  />
-                  <TableBody>
-                    {filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
-                      const { ID, CinemaType, Theater, ShowDate, ShowTime, AttendeeName } = row;
-                      const MovieName = row.Movie.Name;
-                      // const selectedUser = selected.indexOf(ID) !== -1;
+                          return (
+                            <TableRow hover key={ID} tabIndex={-1} role="checkbox">
 
-                      return (
-                        <TableRow hover key={ID} tabIndex={-1} role="checkbox">
-                          {/* <TableCell padding="checkbox">
-                            <Checkbox checked={selectedUser} onChange={(event) => handleClick(event, name)} />
-                          </TableCell> */}
+                              <TableCell align="center" component="th" scope="row" padding="none">
+                                <Avatar alt={CinemaType} src="" sx={{ margin: 'auto', display: 'block' }} />
+                              </TableCell>
 
-                          <TableCell align="center" component="th" scope="row" padding="none">
-                            {/* <Stack direction="row" alignItems="center" spacing={2}> */}
-                            <Avatar alt={CinemaType} src="" sx={{ margin: 'auto', display: 'block' }} />
-                              {/* <Typography variant="subtitle2" noWrap>
-                                {name}
-                              </Typography> */}
-                            {/* </Stack> */}
-                          </TableCell>
+                              <TableCell align="center">
+                                <Avatar alt={CinemaType} src="" sx={{ margin: 'auto', display: 'block' }} />
+                                {MovieName}
+                              </TableCell>
 
-                          <TableCell align="center">
-                            <Avatar alt={CinemaType} src="" sx={{ margin: 'auto', display: 'block' }} />
-                            {MovieName}
+                              <TableCell align="center">{Theater}</TableCell>
+
+                              <TableCell align="center">{ShowDate}</TableCell>
+
+                              <TableCell align="center">
+                                <Label color={(ShowTime === 'banned' && 'error') || 'success'}>{sentenceCase(ShowTime)}</Label>
+                              </TableCell>
+
+                              <TableCell align="center">
+                                {AttendeeName}
+                              </TableCell>
+                              <TableCell align="center">
+                                <Label color={(ShowTime === 'banned' && 'error') || 'success'}>{sentenceCase("예매하기")}</Label>
+                              </TableCell>
+                            </TableRow>
+                          );
+                        })}
+                        {emptyRows > 0 && (
+                          <TableRow style={{ height: 53 * emptyRows }}>
+                            <TableCell colSpan={6} />
+                          </TableRow>
+                        )}
+                      </TableBody>
+
+                      {isNotFound && (
+                        <TableBody>
+                          <TableRow>
+                            <TableCell align="center" colSpan={6} sx={{ py: 3 }}>
+                              <Paper
+                                sx={{
+                                  textAlign: 'center',
+                                }}
+                              >
+                                <Typography variant="h6" paragraph>
+                                  Not found
+                                </Typography>
+
+                                <Typography variant="body2">
+                                  No results found for &nbsp;
+                                  <strong>&quot;{filterName}&quot;</strong>.
+                                  <br /> Try checking for typos or using complete words.
+                                </Typography>
+                              </Paper>
                             </TableCell>
+                          </TableRow>
+                        </TableBody>
+                      )}
+                    </Table>
+                  </TableContainer>
+                </Scrollbar>
+              </Card>
+            </Container>
+          </Grid> */}
 
-                          <TableCell align="center">{Theater}</TableCell>
-
-                          <TableCell align="center">{ShowDate}</TableCell>
-
-                          <TableCell align="center">
-                            <Label color={(ShowTime === 'banned' && 'error') || 'success'}>{sentenceCase(ShowTime)}</Label>
-                          </TableCell>
-
-                          <TableCell align="center">
-                            {AttendeeName}
-                            {/* <IconButton size="large" color="inherit" onClick={handleOpenMenu}> */}
-                              {/* <Iconify icon={'eva:more-vertical-fill'} /> */}
-                            {/* </IconButton> */}
-                          </TableCell>
-                          <TableCell align="center">
-                            <Label color={(ShowTime === 'banned' && 'error') || 'success'}>{sentenceCase("예매하기")}</Label>
-                            {/* <IconButton size="large" color="inherit" onClick={handleOpenMenu}>
-                              <Iconify icon={'eva:more-vertical-fill'} /> 
-                            </IconButton> */}
-                          </TableCell>
-                        </TableRow>
-                      );
-                    })}
-                    {emptyRows > 0 && (
-                      <TableRow style={{ height: 53 * emptyRows }}>
-                        <TableCell colSpan={6} />
-                      </TableRow>
-                    )}
-                  </TableBody>
-
-                  {isNotFound && (
-                    <TableBody>
-                      <TableRow>
-                        <TableCell align="center" colSpan={6} sx={{ py: 3 }}>
-                          <Paper
-                            sx={{
-                              textAlign: 'center',
-                            }}
-                          >
-                            <Typography variant="h6" paragraph>
-                              Not found
-                            </Typography>
-
-                            <Typography variant="body2">
-                              No results found for &nbsp;
-                              <strong>&quot;{filterName}&quot;</strong>.
-                              <br /> Try checking for typos or using complete words.
-                            </Typography>
-                          </Paper>
-                        </TableCell>
-                      </TableRow>
-                    </TableBody>
-                  )}
-                </Table>
-              </TableContainer>
-            </Scrollbar>
-
-            {/* <TablePagination
-              rowsPerPageOptions={[5, 10, 25]}
-              component="div"
-              count={sgList.length}
-              rowsPerPage={rowsPerPage}
-              page={page}
-              onPageChange={handleChangePage}
-              onRowsPerPageChange={handleChangeRowsPerPage}
-            /> */}
-          </Card>
-        </Container>
-      </Grid>
-          
           <Grid item xs={12} md={12} lg={12}>
             <Container>
               <Stack direction="row" alignItems="center" justifyContent="space-between" mb={2} ml={1}>
@@ -452,21 +421,7 @@ export default function HomePage() {
             </Card>
           </Grid> */}
 
-          <Grid item xs={12} sm={6} md={3}>
-            <AppWidgetSummary title="프로필 관리" total={714000} icon={'ant-design:android-filled'} />
-          </Grid>
 
-          <Grid item xs={12} sm={6} md={3}>
-            <AppWidgetSummary title="작품 공고" total={1352831} color="info" icon={'ant-design:apple-filled'} />
-          </Grid>
-
-          <Grid item xs={12} sm={6} md={3}>
-            <AppWidgetSummary title="매칭 요청" total={1723315} color="warning" icon={'ant-design:windows-filled'} />
-          </Grid>
-
-          <Grid item xs={12} sm={6} md={3}>
-            <AppWidgetSummary title="DM" total={234} color="error" icon={'ant-design:bug-filled'} />
-          </Grid>
 
           {/* <Grid item xs={12} md={6} lg={8}>
             <AppWebsiteVisits

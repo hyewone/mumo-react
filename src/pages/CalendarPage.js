@@ -1,47 +1,27 @@
-import { Helmet } from 'react-helmet-async';
-import axios from 'axios';
-import { useEffect, useState } from 'react';
-import { faker } from '@faker-js/faker';
-import UseCalendar from 'src/components/calendar/UseCalendar';
-import MapSideList from 'src/components/mapList/MapSideList'
-import Sheet from 'react-modal-sheet';
+import {
+  Card, Container, Grid, Stack, Typography
+} from '@mui/material';
 // @mui
 import { useTheme } from '@mui/material/styles';
-import { 
-  Grid, 
-  Container, 
-  Typography,
-  Stack,
-  Card,
-  Box,
-} from '@mui/material';
-// components
-import Iconify from '../components/iconify';
-// sections
-import {
-  AppTasks,
-  AppNewsUpdate,
-  AppOrderTimeline,
-  AppCurrentVisits,
-  AppWebsiteVisits,
-  AppTrafficBySite,
-  AppWidgetSummary,
-  AppCurrentSubject,
-  AppConversionRates,
-} from '../sections/@dashboard/app';
+import axios from 'axios';
+import { useEffect, useState } from 'react';
+import { Helmet } from 'react-helmet-async';
+import BottomSheet from 'src/components/bottomSheet/BottomSheet';
+import UseCalendar from 'src/components/calendar/UseCalendar';
+import MapSideList from 'src/components/mapList/MapSideList';
+// hooks
+import useResponsive from '../hooks/useResponsive';
 
 // ----------------------------------------------------------------------
 
 export default function CalendarPage() {
   const theme = useTheme();
+  const isDesktop = useResponsive('up', 'lg');
 
   const apiUrl = process.env.REACT_APP_API_URL
 
-  const [sgList, setSgList] = useState([]);  
-  const [isDetailOpen, setDetailOpen] = useState(false);
-  const [isListOpen, setListOpen] = useState(false);
-  const [sgDetail, setSgDetail] = useState({});
-  const [sgDayList, setSgDayList] = useState([]);
+  const [sgList, setSgList] = useState([]);
+  const [isSideOpen, setSideOpen] = useState(true);
 
   const getApiUrl = (request) => {
     return apiUrl + request
@@ -79,40 +59,42 @@ export default function CalendarPage() {
 
       <Container maxWidth="xl">
         {/* <Typography variant="h4" sx={{ mb: 5 }}>
-          무대인사 지도
+          무대인사 캘린더
         </Typography> */}
 
-        <Sheet isOpen={isDetailOpen} onClose={() => setDetailOpen(false)}>
-          <Sheet.Container>
-            <Sheet.Header />
-            <Sheet.Content>This is Detail Sheet</Sheet.Content>
-          </Sheet.Container>
-          <Sheet.Backdrop />
-        </Sheet>
-
-        <Sheet isOpen={isListOpen} onClose={() => setListOpen(false)}>
-          <Sheet.Container>
-            <Sheet.Header />
-            <Sheet.Content>This is List Sheet</Sheet.Content>
-          </Sheet.Container>
-          <Sheet.Backdrop />
-        </Sheet>
-
+        <BottomSheet
+          sgList={sgList}
+          isDesktop={isDesktop}
+          isSideOpen={isSideOpen}
+          setSideOpen={setSideOpen}
+        />
         <Grid container spacing={3}>
           <Grid item xs={12} md={12} lg={12}>
-              <Container>
-                <Stack direction="row" alignItems="center" justifyContent="space-between" mb={2} ml={1}>
-                  <Typography variant="h4" gutterBottom>
-                    무대인사 달력
-                  </Typography>
-                </Stack>
-                  <Card>
+            <Container>
+              <Stack direction="row" alignItems="center" justifyContent="space-between" mb={2} ml={1}>
+                <Typography variant="h4" gutterBottom>
+                  무대인사 달력
+                </Typography>
+              </Stack>
+              <Grid item xs={12} md={12} lg={12}>
+                <Card>
+                  <UseCalendar isDesktop={isDesktop} isSideOpen={isSideOpen}/>
+                  <MapSideList
+                    sgList={sgList}
+                    isDesktop={isDesktop}
+                    isSideOpen={isSideOpen}
+                    setSideOpen={setSideOpen}
+                  />
+                </Card>
+              </Grid>
+              {/* <Card>
                       <UseCalendar isDetailOpen={isDetailOpen} setDetailOpen={setDetailOpen} 
                                    isListOpen={isListOpen} setListOpen={setListOpen}
                                    sgDetail={sgDetail} setSgDetail={setSgDetail}
                                    sgDayList={sgDayList} setSgDayList={setSgDayList}
+                                   isDesktop={isDesktop}
                       />
-                  </Card>
+                  </Card> */}
             </Container>
           </Grid>
           {/* <Grid item xs={12} sm={6} md={3}>

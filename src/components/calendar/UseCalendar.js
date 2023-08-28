@@ -1,11 +1,12 @@
 /* eslint-disable no-console */
 // import './app.css';
-import React, { useCallback, useEffect, useRef, useState } from 'react';
-import Calendar from '@toast-ui/react-calendar';
 import TZDate from '@toast-ui/calendar';
 import '@toast-ui/calendar/dist/toastui-calendar.min.css';
+import Calendar from '@toast-ui/react-calendar';
+import PropTypes from 'prop-types';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { theme } from './theme';
-// import { addDate, addHours, subtractDate } from './utils';
+
 
 const today = new TZDate();
 // const today = new Date();
@@ -24,7 +25,13 @@ const viewModeOptions = [
   },
 ];
 
-export default function UseCalendar({ isDetailOpen, setDetailOpen, isListOpen, setListOpen, sgDetail, setSgDetail, sgDayList, setSgDayList}) {
+UseCalendar.propTypes = {
+  isDesktop: PropTypes.bool,
+  isSideOpen: PropTypes.bool,
+};
+
+export default function UseCalendar({ isDesktop, isSideOpen }) {
+  
   const view = "month"
   const calendarRef = useRef(null);
   const [selectedDateRangeText, setSelectedDateRangeText] = useState('');
@@ -51,8 +58,8 @@ export default function UseCalendar({ isDetailOpen, setDetailOpen, isListOpen, s
       calendarId: '0',
       title: 'TOAST UI Calendar Study',
       category: 'time',
-        start: '2023-08-28T15:00:00',
-        end: '2023-08-29T15:30:00',
+      start: '2023-08-28T15:00:00',
+      end: '2023-08-29T15:30:00',
     },
     // ... Other initial events ...
   ];
@@ -76,7 +83,6 @@ export default function UseCalendar({ isDetailOpen, setDetailOpen, isListOpen, s
     console.log('MouseEvent : ', res.nativeEvent);
     console.log('Event Info : ', res.event);
     console.groupEnd();
-    setListOpen(true)
   };
 
   const onClickEvent = (res) => {
@@ -84,7 +90,6 @@ export default function UseCalendar({ isDetailOpen, setDetailOpen, isListOpen, s
     console.log('MouseEvent : ', res.nativeEvent);
     console.log('Event Info : ', res.event);
     console.groupEnd();
-    setDetailOpen(true)
   };
 
   const onAfterRenderEvent = (event) => {
@@ -97,20 +102,21 @@ export default function UseCalendar({ isDetailOpen, setDetailOpen, isListOpen, s
 
   const onClickNavi = (event) => {
     console.log("onClickNavi")
-    };
+  };
 
-    const onClickSchedule = (event) => {
-        console.log("handleDaySelect")
-    };
-    // const onChangeSelect = (event) => {
-    //     console.log("onChangeSelect")
-    // // setSelectedView(ev.target.value as ViewType);
-    // };  
+  const onClickSchedule = (event) => {
+    console.log("handleDaySelect")
+  };
+  // const onChangeSelect = (event) => {
+  //     console.log("onChangeSelect")
+  // // setSelectedView(ev.target.value as ViewType);
+  // };  
 
   // Other event handler functions ...
 
   return (
-    <div>
+    <div
+    style={{ width: isSideOpen && isDesktop ? 'calc(100% * 7 / 12)' : '100%'}}>
       {/* <h1>🍞📅 TOAST UI Calendar + React.js</h1> */}
       <div>
         {/* <select onChange={onChangeSelect} value={selectedView}>
@@ -149,9 +155,13 @@ export default function UseCalendar({ isDetailOpen, setDetailOpen, isListOpen, s
         <span className="render-range">{selectedDateRangeText}</span>
       </div>
       <Calendar
-        height="900px"
+        height="500px"
+        // width={isSideOpen ? '10px' : '100%'}
         calendars={initialCalendars}
-        month={{ startDayOfWeek: 1 }}
+        month={{
+          startDayOfWeek: 1,
+          visibleWeeksCount: 5,
+        }}
         scrollToNow
         events={initialEvents}
         template={{
@@ -168,7 +178,7 @@ export default function UseCalendar({ isDetailOpen, setDetailOpen, isListOpen, s
             // ... Other timezones ...
           ],
         }}
-        useDetailPopup={false}
+        useDetailPopup={isDesktop}
         useFormPopup={false}
         view={selectedView}
         week={{
@@ -183,9 +193,9 @@ export default function UseCalendar({ isDetailOpen, setDetailOpen, isListOpen, s
         // onClickDayname={onClickEvent}
         onClickEvent={onClickEvent}
         onSelectDateTime={onSelectDateTime}
-        // onClickTimezonesCollapseBtn={onClickTimezonesCollapseBtn}
-        // onBeforeUpdateEvent={onBeforeUpdateEvent}
-        // onBeforeCreateEvent={onBeforeCreateEvent}
+      // onClickTimezonesCollapseBtn={onClickTimezonesCollapseBtn}
+      // onBeforeUpdateEvent={onBeforeUpdateEvent}
+      // onBeforeCreateEvent={onBeforeCreateEvent}
       />
     </div>
   );

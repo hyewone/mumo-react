@@ -1,12 +1,17 @@
+import {
+  ChevronLeft,
+  ChevronRight
+} from '@mui/icons-material';
+import {
+  Paper, Slide, Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow, ToggleButton, ToggleButtonGroup
+} from '@mui/material';
 import PropTypes from 'prop-types';
-import * as React from 'react';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import Paper from '@mui/material/Paper';
+import { forwardRef, useState } from 'react';
 import { TableVirtuoso } from 'react-virtuoso';
 
 const sample = [
@@ -59,7 +64,7 @@ const rows = Array.from({ length: 200 }, (_, index) => {
 });
 
 const VirtuosoTableComponents = {
-  Scroller: React.forwardRef((props, ref) => (
+  Scroller: forwardRef((props, ref) => (
     <TableContainer component={Paper} {...props} ref={ref} />
   )),
   Table: (props) => (
@@ -67,7 +72,7 @@ const VirtuosoTableComponents = {
   ),
   TableHead,
   TableRow: ({ item: _item, ...props }) => <TableRow {...props} />,
-  TableBody: React.forwardRef((props, ref) => <TableBody {...props} ref={ref} />),
+  TableBody: forwardRef((props, ref) => <TableBody {...props} ref={ref} />),
 };
 
 function fixedHeaderContent() {
@@ -98,11 +103,11 @@ function rowContent(_index, row) {
           key={column.dataKey}
           align="center"
         >
-        {
+          {
             i === 0 && row.Movie[column.dataKey]
-                ? row.Movie[column.dataKey]
-                : row[column.dataKey]
-        }
+              ? row.Movie[column.dataKey]
+              : row[column.dataKey]
+          }
         </TableCell>
       ))}
     </>
@@ -110,19 +115,78 @@ function rowContent(_index, row) {
 }
 
 MapSideList.propTypes = {
-    sgList: PropTypes.array.isRequired,
+  sgList: PropTypes.array.isRequired,
+  isDesktop: PropTypes.bool,
+  isSideOpen: PropTypes.bool,
+  setSideOpen: PropTypes.func,
 };
 
 
-export default function MapSideList({ sgList, ...other }) {
+export default function MapSideList({ sgList, isDesktop, isSideOpen, setSideOpen, ...other }) {
+
+  const [isDetailOpen, setDetailOpen] = useState(false);
+  const [isListOpen, setListOpen] = useState(true);
+  const [sgDetail, setSgDetail] = useState({});
+  const [sgDayList, setSgDayList] = useState([]);
+
+  const handleDetailMoreButtonClick = () => {
+    setDetailOpen(true)
+  }
+
+  const handleListMoreButtonClick = () => {
+    setListOpen(true)
+  }
+
+
+
   return (
-    <Paper style={{ height: "500px", width: '100%' }}>
-      <TableVirtuoso
-        data={sgList}
-        components={VirtuosoTableComponents}
-        fixedHeaderContent={fixedHeaderContent}
-        itemContent={rowContent}
-      />
-    </Paper>
+    <>
+      {isDesktop && (
+        <>
+          <ToggleButtonGroup
+            orientation="vertical"
+            exclusive
+            onChange={() => setSideOpen((prev) => !prev)}
+            sx={{
+              zIndex: 9, position: 'absolute', top: 'calc(50% - 35px)',
+              left: isSideOpen ? 'calc(100% - (100% * 5 / 12) - 27px)' : 'calc(100% - 27px)',
+              transition: 'left 0.01s ease-in-out',
+              backgroundColor: '#FFFFFF',
+              border: '0.7px solid rgba(0, 0, 0, 0.2)',
+            }}
+          >
+            {isSideOpen ? (
+              <ToggleButton value="right" aria-label="right aligned" sx={{ height: '70px', width: '30px' }}>
+                <ChevronRight />
+              </ToggleButton>
+            ) : (
+              <ToggleButton value="left" aria-label="left aligned" sx={{ height: '70px', width: '30px' }}>
+                <ChevronLeft />
+              </ToggleButton>
+            )}
+          </ToggleButtonGroup>
+          <Slide direction="left" in={isSideOpen}>
+            <Paper
+              style={{
+                position: 'absolute',
+                top: 0,
+                left: 'calc(100% - (100% * 5 / 12))',
+                width: isSideOpen ? 'calc(100% * 5 / 12)' : '0',
+                height: isSideOpen ? "500px" : "0px",
+                zIndex: 10,
+                borderLeft: '0.7px solid rgba(0, 0, 0, 0.2)',
+              }}
+            >
+              <TableVirtuoso
+                data={sgList}
+                components={VirtuosoTableComponents}
+                fixedHeaderContent={fixedHeaderContent}
+                itemContent={rowContent}
+              />
+            </Paper>
+          </Slide>
+        </>
+      )}
+    </>
   );
 }

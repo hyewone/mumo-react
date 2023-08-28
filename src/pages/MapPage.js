@@ -1,42 +1,28 @@
-import { Helmet } from 'react-helmet-async';
-import axios from 'axios';
-import { useEffect, useState } from 'react';
-import { faker } from '@faker-js/faker';
-import KakaoMap from 'src/components/map/KakaoMap';
-import MapSideList from 'src/components/mapList/MapSideList'
+import {
+  Card, Container, Grid, Stack, Typography
+} from '@mui/material';
 // @mui
 import { useTheme } from '@mui/material/styles';
-import { 
-  Grid, 
-  Container, 
-  Typography,
-  Stack,
-  Card,
-  Box,
-} from '@mui/material';
-// components
-import Iconify from '../components/iconify';
-// sections
-import {
-  AppTasks,
-  AppNewsUpdate,
-  AppOrderTimeline,
-  AppCurrentVisits,
-  AppWebsiteVisits,
-  AppTrafficBySite,
-  AppWidgetSummary,
-  AppCurrentSubject,
-  AppConversionRates,
-} from '../sections/@dashboard/app';
+import axios from 'axios';
+import { useEffect, useState } from 'react';
+import { Helmet } from 'react-helmet-async';
+import BottomSheet from 'src/components/bottomSheet/BottomSheet';
+import KakaoMap from 'src/components/map/KakaoMap';
+import MapSideList from 'src/components/mapList/MapSideList';
+// hooks
+import useResponsive from '../hooks/useResponsive';
 
 // ----------------------------------------------------------------------
 
 export default function MapPage() {
   const theme = useTheme();
+  const isDesktop = useResponsive('up', 'lg');
 
   const apiUrl = process.env.REACT_APP_API_URL
 
-  const [sgList, setSgList] = useState([]);  
+  const [sgList, setSgList] = useState([]);
+  const [isSideOpen, setSideOpen] = useState(true);
+  const [kakaoMapWidth, setKakaoMapWidth] = useState('calc(100% * 7 / 12)'); // 초기 너비 설정
 
   const getApiUrl = (request) => {
     return apiUrl + request
@@ -65,6 +51,11 @@ export default function MapPage() {
     // console.log(sgList)
   }, [sgList]);
 
+  useEffect(() => {
+    const newWidth = isSideOpen ? 'calc(100% * 7 / 12)' : '100%';
+    setKakaoMapWidth(newWidth);
+  }, [isSideOpen]);
+
 
   return (
     <>
@@ -77,27 +68,39 @@ export default function MapPage() {
           무대인사 지도
         </Typography> */}
 
+        <BottomSheet
+          sgList={sgList}
+          isDesktop={isDesktop}
+          isSideOpen={isSideOpen}
+          setSideOpen={setSideOpen}
+        />
         <Grid container spacing={3}>
           <Grid item xs={12} md={12} lg={12}>
-              <Container>
-                <Stack direction="row" alignItems="center" justifyContent="space-between" mb={2} ml={1}>
-                  <Typography variant="h4" gutterBottom>
-                    무대인사 지도
-                  </Typography>
-                </Stack>
-                <Grid item xs={12} md={12} lg={12}>
-                <Card>
-                  
-                <Grid container>
-                  <Grid item xs={12} md={12} lg={7}>
-                  <KakaoMap />
-                  </Grid>
-                  <Grid item xs={12} md={12} lg={5}>
-                    <MapSideList sgList={sgList} />
-                  </Grid>
-                    </Grid>
-                   </Card>
-                </Grid>
+            <Container>
+              <Stack direction="row" alignItems="center" justifyContent="space-between" mb={2} ml={1}>
+                <Typography variant="h4" gutterBottom>
+                  무대인사 지도
+                </Typography>
+              </Stack>
+              <Stack direction="row" alignItems="center" justifyContent="space-between" mb={2} ml={1}>
+                <Typography variant="h4" gutterBottom>
+                  필터
+                </Typography>
+              </Stack>
+              <Grid item xs={12} md={12} lg={12}>
+                <Card
+                // style={{ border: '0.7px solid rgba(0, 0, 0, 0.2)' }}
+                >
+                  <KakaoMap width={kakaoMapWidth} />
+                  <MapSideList
+                    sgList={sgList}
+                    isDesktop={isDesktop}
+                    isSideOpen={isSideOpen}
+                    setSideOpen={setSideOpen}
+
+                  />
+                </Card>
+              </Grid>
             </Container>
           </Grid>
 
