@@ -1,57 +1,68 @@
-import PropTypes from 'prop-types';
-import { useEffect, useState } from 'react';
-import BottomNavigation from '@mui/material/BottomNavigation';
-import BottomNavigationAction from '@mui/material/BottomNavigationAction';
-import FolderIcon from '@mui/icons-material/Folder';
-import RestoreIcon from '@mui/icons-material/Restore';
-import FavoriteIcon from '@mui/icons-material/Favorite';
-import LocationOnIcon from '@mui/icons-material/LocationOn';
+import React, { useState } from 'react';
+import { useLocation, Link } from 'react-router-dom';
+import {
+  BottomNavigation,
+  BottomNavigationAction,
+} from '@mui/material';
+import {
+  Home as HomeIcon,
+  Map as MapIcon,
+  Event as EventIcon,
+  Favorite as FavoriteIcon,
+} from '@mui/icons-material';
 
-LabelBottomNavigation.propTypes = {
-  openBottomNav: PropTypes.bool,
-  onCloseBottomNav: PropTypes.func,
-  onOpenBottomNav: PropTypes.func,
-};
+export default function BottomNavigationBar() {
 
-export default function LabelBottomNavigation({openBottomNav, onCloseBottomNav, onOpenBottomNav}) {
-  const [value, setValue] = useState('recents');
 
-  // useEffect(() => {
-  //   if (!openBottomNav) {
-  //     onCloseBottomNav();
-  //   }
-  // }, [openBottomNav]);
+  const getMenuFromPath = (pathname) => {
+    if (pathname === '/dashboard/home') return 'home';
+    if (pathname === '/dashboard/map') return 'map';
+    if (pathname === '/dashboard/calendar') return 'calendar';
+    if (pathname === '/dashboard/myPage') return 'myPage';
+    return 'home'; 
+  };
 
-  // const handleNavButtonClick = () => {
-  //   if (openNav) {
-  //     onCloseNav();
-  //   } else {
-  //     onOpenNav();
-  //   }
-  // };
+  const location = useLocation();
+  const [value, setValue] = useState(getMenuFromPath(location.pathname)); // 현재 선택된 메뉴 값
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
 
   return (
-    <BottomNavigation sx={{ position: 'fixed', bottom: 0, left: 0, right: 0 }} value={value} onChange={handleChange}>
+    <BottomNavigation
+      sx={{ position: 'fixed', bottom: 0, left: 0, right: 0 }}
+      value={value}
+      onChange={handleChange}
+    >
       <BottomNavigationAction
-        label="Recents"
-        value="recents"
-        icon={<RestoreIcon />}
+        label="Home"
+        value="home"
+        icon={<HomeIcon />}
+        component={Link}
+        to="/"
       />
       <BottomNavigationAction
-        label="Favorites"
-        value="favorites"
+        label="Map"
+        value="map"
+        icon={<MapIcon />}
+        component={Link}
+        to="/dashboard/map"
+      />
+      <BottomNavigationAction
+        label="Calendar"
+        value="calendar"
+        icon={<EventIcon />}
+        component={Link}
+        to="/dashboard/calendar"
+      />
+      <BottomNavigationAction
+        label="MyPage"
+        value="myPage"
         icon={<FavoriteIcon />}
+        component={Link}
+        to="/dashboard/myPage"
       />
-      <BottomNavigationAction
-        label="Nearby"
-        value="nearby"
-        icon={<LocationOnIcon />}
-      />
-      <BottomNavigationAction label="Folder" value="folder" icon={<FolderIcon />} />
     </BottomNavigation>
   );
 }

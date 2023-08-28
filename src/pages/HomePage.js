@@ -1,5 +1,6 @@
+import { Link as RouterLink } from 'react-router-dom';
 import {
-  Box,
+  Box, Link,
   Card, CardHeader, Container, Grid, Stack, Typography
 } from '@mui/material';
 // @mui
@@ -239,24 +240,24 @@ export default function HomePage() {
                 <Box sx={{ p: 4, pb: 1 }} dir="ltr">
                   <Grid container spacing={1}>
                     <Grid item xs={6} sm={6} md={3}>
-                      <a href="/dashboard/map" className="alink" style={{ textDecoration: 'none' }}>
+                      <Link to="/dashboard/map" component={RouterLink} sx={{ display: 'contents' }}>
                         <AppWidgetSummary title="무대인사 모아보기" total={714000} icon="search" />
-                      </a>
+                      </Link>
                     </Grid>
                     <Grid item xs={6} sm={6} md={3}>
-                      <a href="/dashboard/map" className="alink" style={{ textDecoration: 'none' }}>
+                      <Link to="/dashboard/map" component={RouterLink} sx={{ display: 'contents' }}>
                         <AppWidgetSummary title="지도로 보기" total={1352831} color="secondary" icon="map" />
-                      </a>
+                      </Link>
                     </Grid>
                     <Grid item xs={6} sm={6} md={3}>
-                      <a href="/dashboard/calendar" className="alink" style={{ textDecoration: 'none' }}>
+                      <Link to="/dashboard/calendar" component={RouterLink} sx={{ display: 'contents' }}>
                         <AppWidgetSummary title="캘린더로 보기" total={1723315} color="info" icon="calendar" />
-                      </a>
+                      </Link>
                     </Grid>
                     <Grid item xs={6} sm={6} md={3}>
-                      <a href="/dashboard/myPage" className="alink" style={{ textDecoration: 'none' }}>
+                      <Link to="/dashboard/myPage" component={RouterLink} sx={{ display: 'contents' }}>
                         <AppWidgetSummary title="내 무대인사" total={234} color="error" icon="favorite" />
-                      </a>
+                      </Link>
                     </Grid>
                   </Grid>
                 </Box>

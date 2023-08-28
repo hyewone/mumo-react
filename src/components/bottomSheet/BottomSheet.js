@@ -133,7 +133,7 @@ export default function BottomSheet({ sgList, isDesktop, isSideOpen, setSideOpen
         setIsListOpen(false)
     }
 
-    const handleListRowClick = () => {
+    const handleListRowClick = (item, index) => {
         console.log("handleListRowClick")
         const movieDetails = {}
         setSgDetail(movieDetails);
@@ -183,7 +183,7 @@ export default function BottomSheet({ sgList, isDesktop, isSideOpen, setSideOpen
                                         <>
                                         {/* <div key={index} onClick={() => handleRowClick(item)} > */}
                                             
-                                            <ListItem alignItems="flex-start" onClick={() => handleListRowClick(item)} style={{ cursor: 'pointer' }}>
+                                            <ListItem alignItems="flex-start" onClick={() => handleListRowClick(item, index)} style={{ cursor: 'pointer' }}>
                                                 {/* <ListItemAvatar>
                       <Avatar alt={item.title} src={`/static/images/avatar/${index + 1}.jpg`} />
                     </ListItemAvatar> */}

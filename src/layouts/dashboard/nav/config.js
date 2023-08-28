@@ -12,45 +12,65 @@ const navConfig = [
     icon: icon('ic_home'),
   },
   {
-    title: '배우 프로필',
-    path: '/dashboard/profile',
-    icon: icon('ic_profile'),
+    title: '무대인사 모아보기',
+    path: '/dashboard/home',
+    icon: icon('ic_home'),
   },
   {
-    title: '작품 공고',
-    path: '/dashboard/filmo',
-    icon: icon('ic_filmo'),
+    title: '지도로 보기',
+    path: '/dashboard/map',
+    icon: icon('ic_home'),
   },
   {
-    title: 'dashboard',
-    path: '/dashboard/app',
-    icon: icon('ic_analytics'),
+    title: '캘린더로 보기',
+    path: '/dashboard/calendar',
+    icon: icon('ic_home'),
   },
   {
-    title: 'user',
-    path: '/dashboard/user',
-    icon: icon('ic_user'),
+    title: '내 무대인사',
+    path: '/dashboard/myPage',
+    icon: icon('ic_home'),
   },
-  {
-    title: 'product',
-    path: '/dashboard/products',
-    icon: icon('ic_cart'),
-  },
-  {
-    title: 'blog',
-    path: '/dashboard/blog',
-    icon: icon('ic_blog'),
-  },
-  {
-    title: 'login',
-    path: '/login',
-    icon: icon('ic_lock'),
-  },
-  {
-    title: 'Not found',
-    path: '/404',
-    icon: icon('ic_disabled'),
-  },
+  // {
+  //   title: '배우 프로필',
+  //   path: '/dashboard/profile',
+  //   icon: icon('ic_profile'),
+  // },
+  // {
+  //   title: '작품 공고',
+  //   path: '/dashboard/filmo',
+  //   icon: icon('ic_filmo'),
+  // },
+  // {
+  //   title: 'dashboard',
+  //   path: '/dashboard/app',
+  //   icon: icon('ic_analytics'),
+  // },
+  // {
+  //   title: 'user',
+  //   path: '/dashboard/user',
+  //   icon: icon('ic_user'),
+  // },
+  // {
+  //   title: 'product',
+  //   path: '/dashboard/products',
+  //   icon: icon('ic_cart'),
+  // },
+  // {
+  //   title: 'blog',
+  //   path: '/dashboard/blog',
+  //   icon: icon('ic_blog'),
+  // },
+  // {
+  //   title: 'login',
+  //   path: '/login',
+  //   icon: icon('ic_lock'),
+  // },
+  // {
+  //   title: 'Not found',
+  //   path: '/404',
+  //   icon: icon('ic_disabled'),
+  // },
 ];
 
 export default navConfig;
