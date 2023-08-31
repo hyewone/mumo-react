@@ -13,7 +13,6 @@ import {
 
 export default function BottomNavigationBar() {
 
-
   const getMenuFromPath = (pathname) => {
     if (pathname === '/dashboard/home') return 'home';
     if (pathname === '/dashboard/map') return 'map';
@@ -31,7 +30,7 @@ export default function BottomNavigationBar() {
 
   return (
     <BottomNavigation
-      sx={{ position: 'fixed', bottom: 0, left: 0, right: 0 }}
+      sx={{ position: 'fixed', bottom: 0, left: 0, right: 0, borderTop: '0.7px solid rgba(0, 0, 0, 0.2)'}}
       value={value}
       onChange={handleChange}
     >

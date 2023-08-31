@@ -1,6 +1,7 @@
 
 import {
-    FormatListBulleted
+    FormatListBulleted,
+    TravelExplore,
 } from '@mui/icons-material';
 import {
     Button, Divider, List,
@@ -11,81 +12,6 @@ import { stubFalse } from 'lodash-es';
 import PropTypes from 'prop-types';
 import { useState } from 'react';
 import Sheet from 'react-modal-sheet';
-
-const data = [
-    {
-        title: '콘크리트 유토피아',
-        distance: '500m',
-        theater: '메가박스 강동점',
-        showDate: '2023-08-28(수)',
-        showTime: '15:00~17:00 상영전',
-        participant: '박서준, 박보영, 이병헌, 아무개',
-    },
-    {
-        title: '콘크리트 유토피아',
-        distance: '500m',
-        theater: '메가박스 강동점',
-        showDate: '2023-08-28(수)',
-        showTime: '15:00~17:00 상영전',
-        participant: '박서준, 박보영, 이병헌, 아무개',
-    },
-    {
-        title: '콘크리트 유토피아',
-        distance: '500m',
-        theater: '메가박스 강동점',
-        showDate: '2023-08-28(수)',
-        showTime: '15:00~17:00 상영전',
-        participant: '박서준, 박보영, 이병헌, 아무개',
-    },
-    {
-        title: '콘크리트 유토피아',
-        distance: '500m',
-        theater: '메가박스 강동점',
-        showDate: '2023-08-28(수)',
-        showTime: '15:00~17:00 상영전',
-        participant: '박서준, 박보영, 이병헌, 아무개',
-    },
-    {
-        title: '콘크리트 유토피아',
-        distance: '500m',
-        theater: '메가박스 강동점',
-        showDate: '2023-08-28(수)',
-        showTime: '15:00~17:00 상영전',
-        participant: '박서준, 박보영, 이병헌, 아무개',
-    },
-    {
-        title: '콘크리트 유토피아',
-        distance: '500m',
-        theater: '메가박스 강동점',
-        showDate: '2023-08-28(수)',
-        showTime: '15:00~17:00 상영전',
-        participant: '박서준, 박보영, 이병헌, 아무개',
-    },
-    {
-        title: '콘크리트 유토피아',
-        distance: '500m',
-        theater: '메가박스 강동점',
-        showDate: '2023-08-28(수)',
-        showTime: '15:00~17:00 상영전',
-        participant: '박서준, 박보영, 이병헌, 아무개',
-    },
-    {
-        title: '콘크리트 유토피아',
-        distance: '500m',
-        theater: '메가박스 강동점',
-        showDate: '2023-08-28(수)',
-        showTime: '15:00~17:00 상영전',
-        participant: '박서준, 박보영, 이병헌, 아무개',
-    },
-    {
-        title: '콘크리트 유토피아',
-        distance: '500m',
-        theater: '메가박스 강동점',
-        showDate: '2023-08-28(수)',
-        showTime: '15:00~17:00 상영전',
-        participant: '박서준, 박보영, 이병헌, 아무개',
-    },
-];
 
 BottomSheet.propTypes = {
     sgList: PropTypes.array.isRequired,
@@ -103,10 +29,9 @@ const StyledMoreButton = styled(Button)(() => ({
     zIndex: 9,
 }));
 
-
-
 export default function BottomSheet({ sgList, isDesktop, isSideOpen, setSideOpen, ...other }) {
 
+    const [hoveredIndex, setHoveredIndex] = useState(-1);
     const [isDetailOpen, setIsDetailOpen] = useState(false);
     const [isListOpen, setIsListOpen] = useState(false);
     const [sgDetail, setSgDetail] = useState({});
@@ -178,43 +103,75 @@ export default function BottomSheet({ sgList, isDesktop, isSideOpen, setSideOpen
                         <Sheet.Container>
                             <Sheet.Header />
                             <Sheet.Content>
-                                <List sx={{ width: '100%', bgcolor: 'background.paper', overflow: 'auto'}}>
-                                    {data.map((item, index) => (
-                                        <>
-                                        {/* <div key={index} onClick={() => handleRowClick(item)} > */}
-                                            
-                                            <ListItem alignItems="flex-start" onClick={() => handleListRowClick(item, index)} style={{ cursor: 'pointer' }}>
-                                                {/* <ListItemAvatar>
+                                {sgList.length === 0 && isSideOpen ? (
+                                    <div
+                                        style={{
+                                            display: 'flex',
+                                            justifyContent: 'center',
+                                            alignItems: 'center',
+                                            height: '100%',
+                                            marginTop: '20%',
+                                            marginBottom: '20%',
+                                        }}
+                                    >
+                                        <TravelExplore fontSize="large" sx={{ marginRight: '8px', color: 'gray' }} />
+                                        <Typography variant="body2" sx={{ fontWeight: 'bold', textAlign: 'right', color: 'gray' }}>
+                                            해당 지역에 무대인사가<br />존재하지 않습니다.
+                                        </Typography>
+                                    </div>
+                                ) : (
+                                    <List sx={{ width: '100%', bgcolor: 'background.paper', overflow: 'auto' }}>
+                                        {sgList.map((item, index) => (
+                                            <>
+                                                {/* <div key={index} onClick={() => handleRowClick(item)} > */}
+                                                <ListItem alignItems="flex-start"
+                                                    onClick={() => handleListRowClick(item, index)}
+                                                    onMouseOver={() => setHoveredIndex(index)}
+                                                    onMouseOut={() => setHoveredIndex(-1)}
+                                                    style={{
+                                                        cursor: 'pointer',
+                                                        backgroundColor: hoveredIndex === index ? 'whitesmoke' : 'transparent', // 마우스 오버 시 배경색 변경
+                                                    }}>
+                                                    {/* <ListItemAvatar>
                       <Avatar alt={item.title} src={`/static/images/avatar/${index + 1}.jpg`} />
                     </ListItemAvatar> */}
-                                                <ListItemText
-                                                    primary={item.title}
-                                                    secondary={
-                                                        <>
-                                                            <Typography
-                                                                sx={{ display: 'inline' }}
-                                                                component="span"
-                                                                variant="body2"
-                                                                color="text.primary"
-                                                            >
-                                                                {item.distance} | {item.theater}
-                                                            </Typography>
-                                                            <br />
-                                                            {item.showDate} {item.showTime}
-                                                            <br />
-                                                            {item.participant}
-                                                        </>
+                                                    <ListItemText
+                                                        primary={item.Movie.Name}
+                                                        secondary={
+                                                            <>
+                                                                <Typography
+                                                                    sx={{ display: 'inline' }}
+                                                                    component="span"
+                                                                    variant="body2"
+                                                                    color="text.primary"
+                                                                >
+                                                                    500m | {item.Theater}
+                                                                </Typography>
+                                                                <br />
+                                                                {item.ShowDate} {item.ShowTime}
+                                                                <br />
+                                                                {item.AttendeeName}
+                                                            </>
+                                                        }
+                                                    />
+                                                    {item.RemainingSeats > 0 &&
+                                                        <Button variant="contained" color="primary" style={{ margin: 'auto' }}> {/* 오른쪽으로 붙이기 */}
+                                                            예매하기
+                                                        </Button>
                                                     }
-                                                />
-                                                <Button variant="contained" color="primary" style={{ margin: 'auto' }}> {/* 오른쪽으로 붙이기 */}
-                                                    예매하기
-                                                </Button>
-                                            </ListItem>
-                                        {/* </div> */}
-                                            {index !== data.length - 1 && <Divider variant="inset" component="li" />}
-                                        </>
-                                    ))}
-                                </List>
+                                                </ListItem>
+                                                {/* </div> */}
+                                                {index !== sgList.length - 1 &&
+                                                    <Divider
+                                                        variant="inset"
+                                                        component="li"
+                                                        sx={{ marginLeft: '16px', marginRight: '16px' }} // 스타일 추가
+                                                    />
+                                                }
+                                            </>
+                                        ))}
+                                    </List>
+                                )}
                             </Sheet.Content>
                         </Sheet.Container>
                         <Sheet.Backdrop overlay={false} />

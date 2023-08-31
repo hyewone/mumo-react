@@ -48,7 +48,7 @@ export default function MapPage() {
   }, []);
 
   useEffect(() => {
-    // console.log(sgList)
+    console.log(sgList)
   }, [sgList]);
 
   useEffect(() => {
@@ -97,7 +97,6 @@ export default function MapPage() {
                     isDesktop={isDesktop}
                     isSideOpen={isSideOpen}
                     setSideOpen={setSideOpen}
-
                   />
                 </Card>
               </Grid>

@@ -48,7 +48,7 @@ export default function DashboardLayout() {
   const [open, setOpen] = useState(isDesktop);
   const [openBottomNav, setBottomNavOpen] = useState(!isDesktop);
 
-  const {isLogin, userInfo} = useSelector((state) => state);
+  const { isLogin, userInfo } = useSelector((state) => state);
 
   const location = useLocation();
   useEffect(() => {
@@ -63,15 +63,15 @@ export default function DashboardLayout() {
   return (
     <StyledRoot>
       <Header isLogin={isLogin} userInfo={userInfo} isDesktop={isDesktop} openNav={open} onOpenNav={() => setOpen(true)} onCloseNav={() => setOpen(false)} />
-      
-      <Nav isLogin={isLogin} userInfo={userInfo} isDesktop={isDesktop} openNav={open} onCloseNav={() => setOpen(false)} onOpenNav={() => setOpen(true)}/>
-      
+
+      <Nav isLogin={isLogin} userInfo={userInfo} isDesktop={isDesktop} openNav={open} onCloseNav={() => setOpen(false)} onOpenNav={() => setOpen(true)} />
+
       <Main open={open}>
         <Outlet />
       </Main>
 
-      { !isDesktop && 
-      <BottomNavbar openBottomNav={openBottomNav} onCloseBottomNav={() => setBottomNavOpen(false)} onOpenBottomNav={() => setBottomNavOpen(true)}/> 
+      {!isDesktop &&
+        <BottomNavbar openBottomNav={openBottomNav} onCloseBottomNav={() => setBottomNavOpen(false)} onOpenBottomNav={() => setBottomNavOpen(true)} />
       }
     </StyledRoot>
   );

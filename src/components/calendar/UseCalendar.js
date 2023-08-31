@@ -159,7 +159,7 @@ export default function UseCalendar({ isDesktop, isSideOpen }) {
         // width={isSideOpen ? '10px' : '100%'}
         calendars={initialCalendars}
         month={{
-          startDayOfWeek: 1,
+          // startDayOfWeek: 0,
           visibleWeeksCount: 5,
         }}
         scrollToNow
@@ -178,7 +178,7 @@ export default function UseCalendar({ isDesktop, isSideOpen }) {
             // ... Other timezones ...
           ],
         }}
-        useDetailPopup={isDesktop}
+        useDetailPopup={false}
         useFormPopup={false}
         view={selectedView}
         week={{

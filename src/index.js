@@ -21,10 +21,6 @@ root.render(
     <Provider store={store}>
          {/* <React.StrictMode>  */}
             <meta name="viewport" content="initial-scale=1, viewport-fit=cover" />
-            {/* <script
-                type="text/javascript"
-                src="//dapi.kakao.com/v2/maps/sdk.js?appkey=발급받은 APP KEY를 넣으시면 됩니다.&libraries=services,clusterer"
-                ></script> */}
             <App />
          {/* </React.StrictMode>,  */}
     </Provider>
