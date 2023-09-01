@@ -49,9 +49,14 @@ const StyledButton = styled(Button)(({ theme }) => ({
 
 export default function LoginPage() {
   const mdUp = useResponsive('up', 'md');
+  const apiUrl = process.env.REACT_APP_API_URL
 
   const {isLogin, userInfo} = useSelector((state) => state);
   const isLoginDispatch = useDispatch();
+
+  const getApiUrl = (request) => {
+    return apiUrl + request
+  }
 
   useEffect(() => {
     if (isLogin) {
@@ -263,7 +268,7 @@ export default function LoginPage() {
     requestBody.append('user_email', email);
     requestBody.append('provider_type', provider);
 
-    fetch('http://localhost:8080/auth/login',{
+    fetch(getApiUrl('/auth/login'),{
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
