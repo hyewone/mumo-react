@@ -1,9 +1,8 @@
+import { Box, Divider, IconButton, Link, MenuItem, Popover, Stack, Typography } from '@mui/material';
+import { alpha, styled } from '@mui/material/styles';
+import { Link as RouterLink } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { useState } from 'react';
-// @mui
-import { styled, alpha } from '@mui/material/styles';
-import { Box, Divider, Typography, Stack, MenuItem, Avatar, IconButton, Popover, Link, Drawer } from '@mui/material';
-import { useSelector, useDispatch } from 'react-redux';
 
 // ----------------------------------------------------------------------
 
@@ -72,58 +71,59 @@ export default function AccountPopover({ isLogin, userInfo }) {
   return (
     <>
 
-    <IconButton
-      onClick={handleOpen}
-      sx={{
-        p: 0,
-        ...(open && {
-          '&:before': {
-            zIndex: 1,
-            content: "''",
-            width: '100%',
-            height: '100%',
-            borderRadius: '10%',
-            position: 'absolute',
-            bgcolor: (theme) => alpha(theme.palette.grey[900], 0.8),
-          },
-        }),
-      }}>
-         {isLogin ? (
-               <Box sx={{ width: '100%', height: '100%'}}>
-                <Link underline="none">
-                  <StyledAccount>
-                    {/* <Avatar src={account.photoURL} alt="photoURL" /> */}
+      <IconButton
+        onClick={isLogin && handleOpen}
+        sx={{
+          p: 0,
+          ...(open && {
+            '&:before': {
+              zIndex: 1,
+              content: "''",
+              width: '100%',
+              height: '100%',
+              borderRadius: '10%',
+              position: 'absolute',
+              bgcolor: (theme) => alpha(theme.palette.grey[900], 0.8),
+            },
+          }),
+        }}>
+        {isLogin ? (
+          <Box sx={{ width: '100%', height: '100%' }}>
+            <Link underline="none">
+                      
+              <StyledAccount>
+                {/* <Avatar src={account.photoURL} alt="photoURL" /> */}
 
-                    <Box sx={{ ml: 2 }}>
-                      <Typography variant="subtitle2" sx={{ color: 'text.primary' }}>
-                        {userInfo.Email}
-                      </Typography>
+                <Box sx={{ ml: 2 }}>
+                  <Typography variant="subtitle2" sx={{ color: 'text.primary' }}>
+                    {userInfo.Email}
+                  </Typography>
 
-                      {/* <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+                  {/* <Typography variant="body2" sx={{ color: 'text.secondary' }}>
                         {userInfo.UserType}
                       </Typography> */}
-                    </Box>
-                  </StyledAccount>
-                </Link>
-              </Box>
-          ) :
+                </Box>
+              </StyledAccount>
+            </Link>
+          </Box>
+        ) :
           (
-              <Box sx={{ width: '100%', height: '100%'}}>
-                <Link underline="none">
-                  <StyledAccount>
-                    {/* <Avatar src={nonAccount.photoURL} alt="photoURL" /> */}
-                      <Typography variant="subtitle2" sx={{ color: 'text.primary' }}>
-                        {nonAccount.displayName}
-                      </Typography>
+            <Box sx={{ width: '100%', height: '100%' }}>
+              <Link to="/login" component={RouterLink} underline="none">
+                <StyledAccount>
+                  {/* <Avatar src={nonAccount.photoURL} alt="photoURL" /> */}
+                  <Typography variant="subtitle2" sx={{ color: 'text.primary' }}>
+                    {nonAccount.displayName}
+                  </Typography>
 
-                      {/* <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+                  {/* <Typography variant="body2" sx={{ color: 'text.secondary' }}>
                         {nonAccount.role}
                       </Typography> */}
-                  </StyledAccount>
-                </Link>
-              </Box>
+                </StyledAccount>
+              </Link>
+            </Box>
           )}
-        
+
       </IconButton>
       {/* <IconButton
         onClick={handleOpen}
