@@ -14,7 +14,7 @@ import {
   AppWidgetSummary
 } from '../sections/@dashboard/app';
 import { ProductList } from '../sections/@dashboard/products';
-
+// import Config from 'react-native-config'
 
 
 
@@ -65,7 +65,7 @@ function applySortFilter(array, comparator, query) {
 // ----------------------------------------------------------------------
 
 export default function HomePage() {
-  const apiUrl = process.env.REACT_APP_API_URL
+  const apiUrl = process.env.REACT_APP_API_URL;
 
   const theme = useTheme();
 
