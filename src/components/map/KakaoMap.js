@@ -6,12 +6,15 @@ import PropTypes from 'prop-types';
 import { useEffect, useState } from 'react';
 // kakao map
 import { Map, MapMarker } from "react-kakao-maps-sdk";
+import axios from 'axios';
+import 'regenerator-runtime/runtime';
 
 
 // ----------------------------------------------------------------------
 
 KakaoMap.propTypes = {
     mapWidth: PropTypes.string,
+    sgList: PropTypes.array,
 };
 
 const StyledMap = styled(Map)(({ mapWidth }) => ({
@@ -19,73 +22,89 @@ const StyledMap = styled(Map)(({ mapWidth }) => ({
     height: "500px",
 }));
 
-export default function KakaoMap({ mapWidth }) {
+export default function KakaoMap({ currIndex, setCurrIndex, isDesktop, setSideOpen, setIsListOpen, mapWidth, sgList, setSgList, mapMarkerList, setMapMarkerList, originSgList }) {
 
     const defaultLocation = { lat: 37.555008, lng: 126.971672 }
     const [isLoading, setIsLoading] = useState(true);
-    const [userLocation, setUserLocation] = useState(defaultLocation);
-    const [location, setLocation] = useState(userLocation);
-    const KAKAO_API_KEY = process.env.REACT_APP_OAUTH_CLIENT_ID_KAKAO
-  
+    const [location, setLocation] = useState(defaultLocation);
 
-    const getUserLocation = () => {
-        console.log('getUserLocation')
-        if ('geolocation' in navigator) {
-            navigator.geolocation.getCurrentPosition(
-                (position) => {
-                    const { latitude, longitude } = position.coords;
-                    setUserLocation({ lat: latitude, lng: longitude });
-                    setLocation({ lat: latitude, lng: longitude });
-                },
-                (error) => {
-                    console.error('Error getting user location:', error);
-                    setUserLocation(defaultLocation);
-                    setLocation(defaultLocation);
-                }
-            );
+    const onClickMap = () => {
+        console.log("onClickMap");
+        setSgList(originSgList);
+    }
+
+    const onClickMarker = (mapMarkerInfo, index) => {
+        setCurrIndex(index);
+
+        const selMarkerLatLng = mapMarkerInfo.latlng;
+        const filteredSgList = originSgList.filter((sg) => {
+            return selMarkerLatLng.lat === sg.LatLng.lat && selMarkerLatLng.lng === sg.LatLng.lng;
+        });
+
+        setSgList(filteredSgList)
+
+        if (isDesktop) {
+            setSideOpen(true)
         } else {
-            console.error('Geolocation not available');
-            // 위치 정보를 지원하지 않는 브라우저의 경우 기본 위치를 설정
-            setUserLocation(defaultLocation);
-            setLocation(defaultLocation);
+            setIsListOpen(true)
         }
-    };
+    }
 
-//     // 주소를 이용하여 위도와 경도를 가져오는 함수
-//     async function getLatLngFromAddress(address) {
-//     const apiUrl = `https://dapi.kakao.com/v2/local/search/address.json?query=${encodeURIComponent(
-//       address
-//     )}`;
-    
-//     try {
-//       const response = await fetch(apiUrl, {
-//         headers: {
-//           Authorization: `KakaoAK ${KAKAO_API_KEY}`,
-//         },
-//       });
-//       const data = await response.json();
-      
-//       // 첫 번째 결과의 위도와 경도를 반환합니다.
-//       if (data.documents.length > 0) {
-//         const { x: lng, y: lat } = data.documents[0].address;
-//         return { lat, lng };
-//       } 
-//     //   else {
-//     //     throw new Error('Address not found');
-//     //   }
-//     } catch (error) {
-//       console.error('Error fetching data:', error);
-//       return null;
-//     }
-//   }
+    const setMapMarkerImage = () => {
+        const updatedMapMarkerList = [...mapMarkerList];
+        const image = {
+            src: "https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/markerStar.png",
+            size: {
+                width: 24,
+                height: 35
+            },
+        }
+
+        const targetIndex = updatedMapMarkerList.findIndex((mapMarker) => {
+            console.log(mapMarker)
+            return mapMarker.image?.src === image.src;
+        });
+
+        console.log(targetIndex)
+
+        if (currIndex > -1) {
+            updatedMapMarkerList[currIndex].image = image;
+        }
+        if (targetIndex !== -1) {
+           delete updatedMapMarkerList[targetIndex].image
+        }
+        setMapMarkerList(updatedMapMarkerList);
+    }
 
     useEffect(() => {
         getUserLocation();
-        const loadingTimeout = setTimeout(() => {
-            setIsLoading(false);
-        }, 1500);
-        return () => clearTimeout(loadingTimeout); 
     }, []);
+
+    useEffect(() => {
+        setMapMarkerImage();
+    }, [currIndex]);
+
+
+    // useEffect(() => {
+    //     makeMapMarkers();
+    // }, [sgList]);
+
+    // 마커를 클릭하면  setSgList(data); data는 originSgList 중 해당 마커로 필터링된 데이터여야함
+
+    const getUserLocation = async () => {
+        try {
+            const position = await new Promise((resolve, reject) => {
+                navigator.geolocation.getCurrentPosition(resolve, reject);
+            });
+            const { latitude, longitude } = position.coords;
+            setLocation({ lat: latitude, lng: longitude });
+        } catch (error) {
+            console.error('Error getting location:', error);
+            setLocation(defaultLocation);
+        }
+        setIsLoading(false);
+    };
+
 
     return (
         <>
@@ -93,9 +112,30 @@ export default function KakaoMap({ mapWidth }) {
                 isLoading ? (
                     <Skeleton sx={{ height: 500 }} animation="wave" variant="rectangular" />
                 ) : (
-                    <StyledMap center={location} mapWidth={mapWidth}>
-                        <MapMarker position={location} />
-                        {/* <div style={{ color: "#000" }}>Hello World!</div> */}
+                    <StyledMap center={location} mapWidth={mapWidth} level={9}
+                        onClick={() => onClickMap()}
+                    >
+                        {/* <MapMarker position={location} /> */}
+
+                        {mapMarkerList.map((mapMarkerInfo, index) => (
+                            mapMarkerInfo.image ? (
+                                <MapMarker
+                                    key={`${mapMarkerInfo.title}-${mapMarkerInfo.latlng}`}
+                                    position={mapMarkerInfo.latlng}
+                                    image={mapMarkerInfo.image}
+                                    title={mapMarkerInfo.title}
+                                    onClick={() => onClickMarker(mapMarkerInfo, index)}
+                                />
+                            ) : (
+                                <MapMarker
+                                    key={`${mapMarkerInfo.title}-${mapMarkerInfo.latlng}`}
+                                    position={mapMarkerInfo.latlng}
+                                    title={mapMarkerInfo.title}
+                                    onClick={() => onClickMarker(mapMarkerInfo, index)}
+                                />
+                            )
+
+                        ))}
                     </StyledMap>
                 )
             }

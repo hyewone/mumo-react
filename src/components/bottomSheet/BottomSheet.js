@@ -29,13 +29,10 @@ const StyledMoreButton = styled(Button)(() => ({
     zIndex: 9,
 }));
 
-export default function BottomSheet({ sgList, isDesktop, isSideOpen, setSideOpen, ...other }) {
+export default function BottomSheet({ setCurrIndex, isListOpen, setIsListOpen, originSgList, sgList, setSgList, sgDetail, setSgDetail, isDesktop, isSideOpen, setSideOpen, ...other }) {
 
     const [hoveredIndex, setHoveredIndex] = useState(-1);
     const [isDetailOpen, setIsDetailOpen] = useState(false);
-    const [isListOpen, setIsListOpen] = useState(false);
-    const [sgDetail, setSgDetail] = useState({});
-    const [sgDayList, setSgDayList] = useState([]);
     const [isThroughList, setIsThroughList] = useState(false);
 
     // const handleDetailMoreButtonClick = () => {
@@ -55,16 +52,18 @@ export default function BottomSheet({ sgList, isDesktop, isSideOpen, setSideOpen
     }
 
     const handleOnCloseList = () => {
-        setIsListOpen(false)
+        setIsListOpen(false);
+        setSgList(originSgList);
+        setCurrIndex(-1);
     }
 
     const handleListRowClick = (item, index) => {
-        console.log("handleListRowClick")
-        const movieDetails = {}
-        setSgDetail(movieDetails);
-        setIsListOpen(false);
-        setIsDetailOpen(true);
-        setIsThroughList(true);
+        // console.log("handleListRowClick")
+        // const movieDetails = {}
+        // setSgDetail(movieDetails);
+        // setIsListOpen(false);
+        // setIsDetailOpen(true);
+        // setIsThroughList(true);
     }
 
     return (
@@ -174,7 +173,7 @@ export default function BottomSheet({ sgList, isDesktop, isSideOpen, setSideOpen
                                 )}
                             </Sheet.Content>
                         </Sheet.Container>
-                        <Sheet.Backdrop overlay={false} />
+                        <Sheet.Backdrop onClick={() => handleOnCloseList()}  overlay={false} />
                     </Sheet>
                 </>
             )}

@@ -17,15 +17,13 @@ MapSideList.propTypes = {
   setSideOpen: PropTypes.func,
 };
 
-export default function MapSideList({ sgList, isDesktop, isSideOpen, setSideOpen, ...other }) {
+export default function MapSideList({ sgList, sgDetail, isDesktop, isSideOpen, setSideOpen, ...other }) {
 
   console.log(sgList)
   const [isLoading, setIsLoading] = useState(true);
   const [hoveredIndex, setHoveredIndex] = useState(-1);
   const [isDetailOpen, setDetailOpen] = useState(false);
   const [isListOpen, setListOpen] = useState(true);
-  const [sgDetail, setSgDetail] = useState({});
-  const [sgDayList, setSgDayList] = useState([]);
 
   useEffect(() => {
     const loadingTimeout = setTimeout(() => {
@@ -92,7 +90,26 @@ export default function MapSideList({ sgList, isDesktop, isSideOpen, setSideOpen
             >
 
               {isLoading ? (
-                <List
+
+                sgDetail ? (
+                  <List
+                    sx={{
+                      width: '100%',
+                      bgcolor: 'background.paper',
+                      maxHeight: '500px',
+                      overflow: 'auto',
+                    }}
+                  >
+
+                    {[...Array(5)].map((_, index) => (
+                      <ListItem alignItems="flex-start">
+                        <Skeleton animation="wave" />
+                      </ListItem>
+                    ))}
+                  </List>
+                ) :
+                (
+                  <List
                   sx={{
                     width: '100%',
                     bgcolor: 'background.paper',
@@ -103,86 +120,87 @@ export default function MapSideList({ sgList, isDesktop, isSideOpen, setSideOpen
 
                   {[...Array(5)].map((_, index) => (
                     <ListItem alignItems="flex-start">
-                    <Skeleton animation="wave" />
-                      </ListItem>
+                      <Skeleton animation="wave" />
+                    </ListItem>
                   ))}
                 </List>
+                )
               ) : sgList.length === 0 && isSideOpen ? (
-                <div
-                  style={{
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    height: '100%',
-                  }}
-                >
-                  <TravelExplore fontSize="large" sx={{ marginRight: '8px', color: 'gray' }} />
-                  <Typography variant="body2" sx={{ fontWeight: 'bold', textAlign: 'right', color: 'gray' }}>
-                    해당 범위에 무대인사가<br />존재하지 않습니다.
-                  </Typography>
-                </div>
+              <div
+                style={{
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  height: '100%',
+                }}
+              >
+                <TravelExplore fontSize="large" sx={{ marginRight: '8px', color: 'gray' }} />
+                <Typography variant="body2" sx={{ fontWeight: 'bold', textAlign: 'right', color: 'gray' }}>
+                  해당 범위에 무대인사가<br />존재하지 않습니다.
+                </Typography>
+              </div>
               ) : (
 
 
-                <List
-                  sx={{
-                    width: '100%',
-                    bgcolor: 'background.paper',
-                    maxHeight: '500px',
-                    overflow: 'auto',
-                  }}
-                >
-                  {sgList.map((item, index) => (
-                    <>
-                      {/* <div key={index} onClick={() => handleRowClick(item)} > */}
+              <List
+                sx={{
+                  width: '100%',
+                  bgcolor: 'background.paper',
+                  maxHeight: '500px',
+                  overflow: 'auto',
+                }}
+              >
+                {sgList.map((item, index) => (
+                  <>
+                    {/* <div key={index} onClick={() => handleRowClick(item)} > */}
 
-                      <ListItem alignItems="flex-start"
-                        onClick={() => handleListRowClick(item, index)}
-                        onMouseOver={() => setHoveredIndex(index)}
-                        onMouseOut={() => setHoveredIndex(-1)}
-                        style={{
-                          cursor: 'pointer',
-                          backgroundColor: hoveredIndex === index ? 'whitesmoke' : 'transparent',
-                        }}>
-                        {/* <ListItemAvatar>
+                    <ListItem alignItems="flex-start"
+                      onClick={() => handleListRowClick(item, index)}
+                      onMouseOver={() => setHoveredIndex(index)}
+                      onMouseOut={() => setHoveredIndex(-1)}
+                      style={{
+                        cursor: 'pointer',
+                        backgroundColor: hoveredIndex === index ? 'whitesmoke' : 'transparent',
+                      }}>
+                      {/* <ListItemAvatar>
                       <Avatar alt={item.title} src={`/static/images/avatar/${index + 1}.jpg`} />
                     </ListItemAvatar> */}
-                        <ListItemText
-                          primary={item.Movie.Name}
-                          secondary={
-                            <>
-                              <Typography
-                                sx={{ display: 'inline' }}
-                                component="span"
-                                variant="body2"
-                                color="text.primary"
-                              >
-                                500m | {item.Theater}
-                              </Typography>
-                              <br />
-                              {item.ShowDate} {item.ShowTime}
-                              <br />
-                              {item.AttendeeName}
-                            </>
-                          }
-                        />
-                        {item.RemainingSeats > 0 &&
-                          <Button variant="contained" color="primary" style={{ margin: 'auto' }}> {/* 오른쪽으로 붙이기 */}
-                            예매하기
-                          </Button>
+                      <ListItemText
+                        primary={item.Movie.Name}
+                        secondary={
+                          <>
+                            <Typography
+                              sx={{ display: 'inline' }}
+                              component="span"
+                              variant="body2"
+                              color="text.primary"
+                            >
+                              500m | {item.Theater}
+                            </Typography>
+                            <br />
+                            {item.ShowDate} {item.ShowTime}
+                            <br />
+                            {item.AttendeeName}
+                          </>
                         }
-                      </ListItem>
-                      {/* </div> */}
-                      {index !== sgList.length - 1 &&
-                        <Divider
-                          variant="inset"
-                          component="li"
-                          sx={{ marginLeft: '16px', marginRight: '16px' }} // 스타일 추가
-                        />
+                      />
+                      {item.RemainingSeats > 0 &&
+                        <Button variant="contained" color="primary" style={{ margin: 'auto' }}> {/* 오른쪽으로 붙이기 */}
+                          예매하기
+                        </Button>
                       }
-                    </>
-                  ))}
-                </List>
+                    </ListItem>
+                    {/* </div> */}
+                    {index !== sgList.length - 1 &&
+                      <Divider
+                        variant="inset"
+                        component="li"
+                        sx={{ marginLeft: '16px', marginRight: '16px' }} // 스타일 추가
+                      />
+                    }
+                  </>
+                ))}
+              </List>
               )
               }
             </Paper>

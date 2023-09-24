@@ -1,3 +1,4 @@
+import { ConstructionOutlined } from '@mui/icons-material';
 import {
   Card, Container, Grid, Stack, Typography
 } from '@mui/material';
@@ -19,10 +20,15 @@ export default function MapPage() {
   const isDesktop = useResponsive('up', 'lg');
 
   const apiUrl = process.env.REACT_APP_API_URL
+  const KAKAO_API_KEY = process.env.REACT_APP_OAUTH_CLIENT_ID_KAKAO
 
+  const [originSgList, setOriginSgList] = useState([]);
   const [sgList, setSgList] = useState([]);
+  const [mapMarkerList, setMapMarkerList] = useState([]);
   const [isSideOpen, setSideOpen] = useState(true);
+  const [isListOpen, setIsListOpen] = useState(false);
   const [kakaoMapWidth, setKakaoMapWidth] = useState('calc(100% * 7 / 12)'); // 초기 너비 설정
+  const [currIndex, setCurrIndex] = useState(-1);
 
   const getApiUrl = (request) => {
     return apiUrl + request
@@ -37,15 +43,80 @@ export default function MapPage() {
       const response = await axios.get(getApiUrl('/api/v1/stageGreetings'));
       let data = response.data.stageGreetings
       data = data == null ? [] : data
-      setSgList(data);
+
+      const latLngResult = await makeMapMarkers(data);
+
+      setOriginSgList(latLngResult);
+      setSgList(latLngResult);
     } catch (error) {
       console.error('Error fetching stageGreetings:', error);
     }
   };
 
+  const makeMapMarkers = async (data) => {
+    const newMapMarkers = new Set();
+    // const uniqueLatLngs = new Set();
+    await Promise.all(
+      data.map(async (sg) => {
+        const latLng = await getLatLng(`${sg.CinemaType} ${sg.Theater}`);
+        if (!(latLng.lat === 0 && latLng.lng === 0)) {
+          const mapMarker = {
+            title: `${sg.CinemaType} ${sg.Theater}`,
+            latlng: latLng,
+          };
+          // newMapMarkers.push(mapMarker);
+          newMapMarkers.add(JSON.stringify(mapMarker));
+          sg.LatLng = latLng;
+        }
+      })
+    );
+    const mapMarkerArray = Array.from(newMapMarkers).map((jsonStr) => JSON.parse(jsonStr));
+    
+    console.log(mapMarkerArray)
+    setMapMarkerList(mapMarkerArray);
+
+    return data;
+  };
+
+  const getLatLng = async (theater) => {
+    // const apiUrl = `https://dapi.kakao.com/v2/local/search/address.json?query=${encodeURIComponent(theater)}`;
+    const apiUrl = `https://dapi.kakao.com/v2/local/search/keyword.json?query=${encodeURIComponent(theater)}`;
+
+    let latitude = 0;
+    let longitude = 0;
+
+    const response = await axios.get(apiUrl, {
+      headers: {
+        Authorization: `KakaoAK ${KAKAO_API_KEY}`,
+      },
+    });
+
+    const data = response.data;
+
+    if (data.documents.length > 0) {
+      // 결과에서 첫 번째 위치 정보를 가져옴
+      const location = data.documents[0];
+      latitude = location.y;
+      longitude = location.x;
+
+      // MapMarker 데이터에 넣어준다.
+      // console.log(`주소: ${theater}`);
+      // console.log(`위도: ${latitude}`);
+      // console.log(`경도: ${longitude}`);
+    } else {
+      console.log('주소를 찾을 수 없습니다.');
+    }
+    return { lat: latitude, lng: longitude }
+  }
+
+
   useEffect(() => {
     fetchAllData()
   }, []);
+
+  // useEffect(() => {
+  // makeMapMarkers();
+  // }, [originSgList]);
 
   useEffect(() => {
     console.log(sgList)
@@ -69,10 +140,15 @@ export default function MapPage() {
         </Typography> */}
 
         <BottomSheet
+          originSgList={originSgList}
           sgList={sgList}
+          setSgList={setSgList}
           isDesktop={isDesktop}
           isSideOpen={isSideOpen}
           setSideOpen={setSideOpen}
+          isListOpen={isListOpen}
+          setIsListOpen={setIsListOpen}
+          setCurrIndex={setCurrIndex}
         />
         <Grid container spacing={3}>
           <Grid item xs={12} md={12} lg={12}>
@@ -91,7 +167,17 @@ export default function MapPage() {
                 <Card
                 // style={{ border: '0.7px solid rgba(0, 0, 0, 0.2)' }}
                 >
-                  <KakaoMap width={kakaoMapWidth} />
+                  <KakaoMap width={kakaoMapWidth}
+                    currIndex={currIndex}
+                    setCurrIndex={setCurrIndex}
+                    originSgList={originSgList}
+                    isDesktop={isDesktop}
+                    setSideOpen={setSideOpen}
+                    setIsListOpen={setIsListOpen}
+                    sgList={sgList}
+                    setSgList={setSgList}
+                    mapMarkerList={mapMarkerList}
+                    setMapMarkerList={setMapMarkerList} />
                   <MapSideList
                     sgList={sgList}
                     isDesktop={isDesktop}

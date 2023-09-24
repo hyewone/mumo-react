@@ -10,6 +10,7 @@ import BottomSheet from 'src/components/bottomSheet/BottomSheet';
 import UseCalendar from 'src/components/calendar/UseCalendar';
 import MapSideList from 'src/components/mapList/MapSideList';
 // hooks
+import { format } from 'date-fns';
 import useResponsive from '../hooks/useResponsive';
 
 // ----------------------------------------------------------------------
@@ -20,8 +21,11 @@ export default function CalendarPage() {
 
   const apiUrl = process.env.REACT_APP_API_URL
 
+  const [originSgList, setOriginSgList] = useState([]);
   const [sgList, setSgList] = useState([]);
+  const [calDataList, setCalDataList] = useState([]);
   const [isSideOpen, setSideOpen] = useState(true);
+  const [isListOpen, setIsListOpen] = useState(false);
 
   const getApiUrl = (request) => {
     return apiUrl + request
@@ -36,11 +40,69 @@ export default function CalendarPage() {
       const response = await axios.get(getApiUrl('/api/v1/stageGreetings'));
       let data = response.data.stageGreetings
       data = data == null ? [] : data
+
+      await makeCalDatas(data);
+      setOriginSgList(data);
       setSgList(data);
     } catch (error) {
       console.error('Error fetching stageGreetings:', error);
     }
   };
+
+  const makeCalDatas = async (data) => {
+    const newCalDatas = new Set();
+
+    await Promise.all(
+      data.map(async (sg, idx) => {
+        const startEndDate = formatDateTime(sg.ShowDate, sg.ShowTime);
+        const calData = {
+          id: idx.toString(),
+          calendarId: idx.toString(),
+          title: `${sg.Movie.Name}`,
+          category: 'time',
+          start: startEndDate.start,
+          end: startEndDate.end,
+          location: `${sg.CinemaType} ${sg.Theater}`,
+          attendees: sg.AttendeeName,
+          backgroundColor: getColorByCinemaType(sg.CinemaType)
+        };
+        newCalDatas.add(JSON.stringify(calData));
+      })
+    );
+
+    const calDataArray = Array.from(newCalDatas).map((jsonStr) => JSON.parse(jsonStr));
+    setCalDataList(calDataArray);
+  };
+
+  const formatDateTime = (showDate, showTime) => {
+    const dateParts = showDate.split('.');
+    const formattedDate = `${dateParts[0]}-${dateParts[1]}-${dateParts[2]}`;
+
+    const timeParts = showTime.split('~');
+    const startTime = timeParts[0].trim();
+    const endTime = timeParts[1].trim();
+
+    const start = new Date(`${formattedDate}T${startTime}:00`);
+    const end = new Date(`${formattedDate}T${endTime}:00`);
+
+    return {
+      start: format(start, 'yyyy-MM-dd\'T\'HH:mm:ss').toString(),
+      end: format(end, 'yyyy-MM-dd\'T\'HH:mm:ss').toString(),
+    };
+  }
+
+  const getColorByCinemaType = (cinemaType) => {
+    switch (cinemaType) {
+      case 'MEGABOX':
+        return '#6f00ff';
+      case 'CGV':
+        return '#0080ff';
+      case 'LOTTECINEMA':
+        return '#ff0000';
+      default:
+        return '#808080';
+    }
+  }
 
   useEffect(() => {
     fetchAllData()
@@ -63,10 +125,14 @@ export default function CalendarPage() {
         </Typography> */}
 
         <BottomSheet
+          originSgList={originSgList}
           sgList={sgList}
+          setSgList={setSgList}
           isDesktop={isDesktop}
           isSideOpen={isSideOpen}
           setSideOpen={setSideOpen}
+          isListOpen={isListOpen}
+          setIsListOpen={setIsListOpen}
         />
         <Grid container spacing={3}>
           <Grid item xs={12} md={12} lg={12}>
@@ -78,7 +144,7 @@ export default function CalendarPage() {
               </Stack>
               <Grid item xs={12} md={12} lg={12}>
                 <Card>
-                  <UseCalendar isDesktop={isDesktop} isSideOpen={isSideOpen}/>
+                  <UseCalendar isDesktop={isDesktop} originSgList={originSgList} setOriginSgList={setOriginSgList} setSgList={setSgList} isSideOpen={isSideOpen} setSideOpen={setSideOpen} isListOpen={isListOpen} setIsListOpen={setIsListOpen} calDataList={calDataList} />
                   <MapSideList
                     sgList={sgList}
                     isDesktop={isDesktop}

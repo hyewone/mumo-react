@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLocation, Link } from 'react-router-dom';
 import {
   BottomNavigation,
@@ -27,6 +27,10 @@ export default function BottomNavigationBar() {
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
+
+  useEffect(() => {
+    setValue(getMenuFromPath(location.pathname))
+  }, [location])
 
   return (
     <BottomNavigation

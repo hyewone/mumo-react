@@ -30,8 +30,8 @@ UseCalendar.propTypes = {
   isSideOpen: PropTypes.bool,
 };
 
-export default function UseCalendar({ isDesktop, isSideOpen }) {
-  
+export default function UseCalendar({ isDesktop, isSideOpen, setSideOpen, isListOpen, setIsListOpen, calDataList, originSgList, setOriginSgList, setSgList }) {
+
   const view = "month"
   const calendarRef = useRef(null);
   const [selectedDateRangeText, setSelectedDateRangeText] = useState('');
@@ -58,17 +58,32 @@ export default function UseCalendar({ isDesktop, isSideOpen }) {
       calendarId: '0',
       title: 'TOAST UI Calendar Study',
       category: 'time',
-      start: '2023-08-28T15:00:00',
-      end: '2023-08-29T15:30:00',
+      start: '2023-09-28T15:00:00',
+      end: '2023-09-29T15:30:00',
     },
     // ... Other initial events ...
   ];
+
 
   const getCalInstance = useCallback(() => calendarRef.current?.getInstance?.(), []);
 
   const updateRenderRangeText = useCallback(() => {
     // ... Function body remains the same ...
   }, [getCalInstance]);
+
+  useEffect(() => {
+    if (!isSideOpen) {
+      const calendarInstance = calendarRef.current.getInstance();
+      calendarInstance.clearGridSelections();
+    }
+  }, [isSideOpen]);
+
+  useEffect(() => {
+    if (!isListOpen) {
+      const calendarInstance = calendarRef.current.getInstance();
+      calendarInstance.clearGridSelections();
+    }
+  }, [isListOpen]);
 
   useEffect(() => {
     setSelectedView(view);
@@ -79,17 +94,37 @@ export default function UseCalendar({ isDesktop, isSideOpen }) {
   }, [selectedView, updateRenderRangeText]);
 
   const onSelectDateTime = (res) => {
-    console.group('onSelectDateTime');
-    console.log('MouseEvent : ', res.nativeEvent);
-    console.log('Event Info : ', res.event);
-    console.groupEnd();
+    const formattedDate = getDateToString(res.start);
+    const filteredSgList = originSgList.filter((sg) => {
+      return formattedDate === sg.ShowDate;
+    });
+
+    setSgList(filteredSgList);
+
+    if (isDesktop) {
+      setSideOpen(true)
+    } else {
+      setIsListOpen(true)
+    }
   };
 
   const onClickEvent = (res) => {
-    console.group('onClickEvent');
+    // console.group('onClickEvent');
     console.log('MouseEvent : ', res.nativeEvent);
     console.log('Event Info : ', res.event);
-    console.groupEnd();
+
+    const formattedDate = getDateToString(res.event.start.d);
+    const filteredSgList = originSgList.filter((sg) => {
+      return formattedDate === sg.ShowDate;
+    });
+
+    setSgList(filteredSgList);
+
+    if (isDesktop) {
+      setSideOpen(true)
+    } else {
+      setIsListOpen(true)
+    }
   };
 
   const onAfterRenderEvent = (event) => {
@@ -107,6 +142,21 @@ export default function UseCalendar({ isDesktop, isSideOpen }) {
   const onClickSchedule = (event) => {
     console.log("handleDaySelect")
   };
+
+  const isDateActive = (currDate, cellDate) => {
+    return currDate.getDate() === cellDate.getDate()
+      && currDate.getMonth() === cellDate.getMonth()
+      && currDate.getFullYear() === cellDate.getFullYear();
+  }
+  
+  const getDateToString = (date) => {
+    const inputDate = new Date(date);
+    const year = inputDate.getFullYear();
+    const month = String(inputDate.getMonth() + 1).padStart(2, '0');
+    const day = String(inputDate.getDate()).padStart(2, '0');
+    return `${year}.${month}.${day}`;
+  }
+
   // const onChangeSelect = (event) => {
   //     console.log("onChangeSelect")
   // // setSelectedView(ev.target.value as ViewType);
@@ -116,7 +166,7 @@ export default function UseCalendar({ isDesktop, isSideOpen }) {
 
   return (
     <div
-    style={{ width: isSideOpen && isDesktop ? 'calc(100% * 7 / 12)' : '100%'}}>
+      style={{ width: isSideOpen && isDesktop ? 'calc(100% * 7 / 12)' : '100%' }}>
       {/* <h1>🍞📅 TOAST UI Calendar + React.js</h1> */}
       <div>
         {/* <select onChange={onChangeSelect} value={selectedView}>
@@ -155,6 +205,7 @@ export default function UseCalendar({ isDesktop, isSideOpen }) {
         <span className="render-range">{selectedDateRangeText}</span>
       </div>
       <Calendar
+        ref={calendarRef}
         height="500px"
         // width={isSideOpen ? '10px' : '100%'}
         calendars={initialCalendars}
@@ -163,10 +214,8 @@ export default function UseCalendar({ isDesktop, isSideOpen }) {
           visibleWeeksCount: 5,
         }}
         scrollToNow
-        events={initialEvents}
-        template={{
-          // ... Milestone and allday templates ...
-        }}
+        events={calDataList}
+        // template={}
         theme={theme}
         timezone={{
           zones: [
@@ -187,7 +236,10 @@ export default function UseCalendar({ isDesktop, isSideOpen }) {
           eventView: true,
           taskView: true,
         }}
-        ref={calendarRef}
+        gridSelection={{
+          enableDblClick: false,
+          enableClick: true,
+        }}
         onAfterRenderEvent={onAfterRenderEvent}
         // onBeforeDeleteEvent={onBeforeDeleteEvent}
         // onClickDayname={onClickEvent}
