@@ -107,11 +107,20 @@ export default function UseCalendar({ isDesktop, isSideOpen, setSideOpen, isList
       setIsListOpen(true)
     }
   };
+  const clickSchedule = (res) => {
+
+    console.log('MouseEvent : ', res.nativeEvent);
+    console.log('Event Info : ', res.event);
+    console.log('Event Info res : ', res);
+
+
+  };
 
   const onClickEvent = (res) => {
     // console.group('onClickEvent');
     console.log('MouseEvent : ', res.nativeEvent);
     console.log('Event Info : ', res.event);
+    console.log(res);
 
     const formattedDate = getDateToString(res.event.start.d);
     const filteredSgList = originSgList.filter((sg) => {
@@ -125,6 +134,25 @@ export default function UseCalendar({ isDesktop, isSideOpen, setSideOpen, isList
     } else {
       setIsListOpen(true)
     }
+
+    // const calendarInstance = calendarRef.current.getInstance();
+    // // calendarInstance.clearGridSelections();
+
+    // calendarInstance.updateSchedule(res.event.id, res.event.calendarId, {
+    //   isFocused: true,
+    // });
+  };
+
+  const onBeforeUpdateEvent = (res) => {
+    console.log('MouseEvent : ', res.nativeEvent);
+    console.log('Event Info : ', res.event);
+    console.log('Event Info res : ', res);
+  };
+
+  const onBeforeCreateEvent = (res) => {
+    console.log('MouseEvent : ', res.nativeEvent);
+    console.log('Event Info : ', res.event);
+    console.log('Event Info res : ', res);
   };
 
   const onAfterRenderEvent = (event) => {
@@ -148,7 +176,7 @@ export default function UseCalendar({ isDesktop, isSideOpen, setSideOpen, isList
       && currDate.getMonth() === cellDate.getMonth()
       && currDate.getFullYear() === cellDate.getFullYear();
   }
-  
+
   const getDateToString = (date) => {
     const inputDate = new Date(date);
     const year = inputDate.getFullYear();
@@ -242,12 +270,12 @@ export default function UseCalendar({ isDesktop, isSideOpen, setSideOpen, isList
         }}
         onAfterRenderEvent={onAfterRenderEvent}
         // onBeforeDeleteEvent={onBeforeDeleteEvent}
-        // onClickDayname={onClickEvent}
+        clickSchedule={clickSchedule}
         onClickEvent={onClickEvent}
         onSelectDateTime={onSelectDateTime}
-      // onClickTimezonesCollapseBtn={onClickTimezonesCollapseBtn}
-      // onBeforeUpdateEvent={onBeforeUpdateEvent}
-      // onBeforeCreateEvent={onBeforeCreateEvent}
+        // onClickTimezonesCollapseBtn={onClickTimezonesCollapseBtn}
+        onBeforeUpdateEvent={onBeforeUpdateEvent}
+        onBeforeCreateEvent={onBeforeCreateEvent}
       />
     </div>
   );
